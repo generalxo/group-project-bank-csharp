@@ -79,8 +79,9 @@
                 "Balance",
                 "Transfer",
                 "Withdraw",
+                "Loan",
                 "Account",
-                "Exit"
+                "Logout"
             };
 
             while (true)
@@ -97,10 +98,13 @@
                     case "Withdraw":
                         Console.WriteLine(" Transfer would start here");
                         break;
-                    case "Account":
+                    case "Loan":
                         Console.WriteLine("Transfer would start here");
                         break;
-                    case "Exit":
+                    case "Account":
+                        Console.WriteLine("Exit would start here");
+                        break;
+                    case "Logout":
                         Console.WriteLine("Exit would start here");
                         break;
                 }
