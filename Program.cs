@@ -38,7 +38,7 @@
 
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
-            //Declaration of list and items.
+            // Declaration of list and items.
             List<string> menuItems = new()
             {
                 "Log in",
