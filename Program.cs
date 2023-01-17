@@ -54,9 +54,9 @@
                 {
                     case "Log in":
                         BankMenu();
-                        Console.WriteLine(" Login would start here");
-                        Console.WriteLine(" Enter any key to continue");
-                        Console.ReadKey();
+                        //Console.WriteLine(" Login would start here");
+                        //Console.WriteLine(" Enter any key to continue");
+                        //Console.ReadKey();
                         break;
                     case "Help":
                         Help();
@@ -91,22 +91,32 @@
                 {
                     case "Balance":
                         Console.WriteLine(" Balance Would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Transfer":
                         Console.WriteLine(" Transfer would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Withdraw":
-                        Console.WriteLine(" Transfer would start here");
+                        Console.WriteLine(" Withdraw would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Loan":
-                        Console.WriteLine("Transfer would start here");
+                        Console.WriteLine(" Loan would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Account":
-                        Console.WriteLine("Exit would start here");
+                        Console.WriteLine(" Account would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Logout":
-                        Console.WriteLine("Exit would start here");
-                        break;
+                        menuIndex = 0;
+                        return;
                 }
             }
         }
