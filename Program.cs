@@ -7,6 +7,7 @@
             StartMenu();
         }
 
+        #region StartMenu, AsciiArt, DrawMenu, Help
         public static void AsciiArt()
         {
             Console.Clear();
@@ -32,6 +33,7 @@
         static int menuIndex = 0;
         public static void StartMenu()
         {
+            Console.CursorVisible = false;
             AsciiArt();
 
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
@@ -51,6 +53,7 @@
                 switch (selectedMenuItem)
                 {
                     case "Log in":
+                        BankMenu();
                         Console.WriteLine(" Login would start here");
                         Console.WriteLine(" Enter any key to continue");
                         Console.ReadKey();
@@ -64,6 +67,44 @@
                 }
             }
 
+        }
+
+        static void BankMenu()
+        {
+
+            string menuMsg = " Welcome to Owl Banking\n Please select an option";
+
+            List<string> menuItems = new()
+            {
+                "Balance",
+                "Transfer",
+                "Withdraw",
+                "Account",
+                "Exit"
+            };
+
+            while (true)
+            {
+                string selectedMenuItems = DrawMenu(menuItems, menuMsg);
+                switch (selectedMenuItems)
+                {
+                    case "Balance":
+                        Console.WriteLine("Balance Would start here");
+                        break;
+                    case "Transfer":
+                        Console.WriteLine("Transfer would start here");
+                        break;
+                    case "Withdraw":
+                        Console.WriteLine("Transfer would start here");
+                        break;
+                    case "Account":
+                        Console.WriteLine("Transfer would start here");
+                        break;
+                    case "Exit":
+                        Console.WriteLine("Exit would start here");
+                        break;
+                }
+            }
         }
 
         public static string DrawMenu(List<string> menuItem, string menuMsg)
@@ -139,6 +180,6 @@
             Console.ReadKey();
             Console.Clear();
         }
-
+        #endregion
     }
 }
