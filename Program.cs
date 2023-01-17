@@ -89,13 +89,13 @@
                 switch (selectedMenuItems)
                 {
                     case "Balance":
-                        Console.WriteLine("Balance Would start here");
+                        Console.WriteLine(" Balance Would start here");
                         break;
                     case "Transfer":
-                        Console.WriteLine("Transfer would start here");
+                        Console.WriteLine(" Transfer would start here");
                         break;
                     case "Withdraw":
-                        Console.WriteLine("Transfer would start here");
+                        Console.WriteLine(" Transfer would start here");
                         break;
                     case "Account":
                         Console.WriteLine("Transfer would start here");
