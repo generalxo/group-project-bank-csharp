@@ -7,7 +7,7 @@
             StartMenu();
         }
 
-        #region StartMenu, AsciiArt, DrawMenu, Help
+        #region StartMenu, BankMenu, AsciiArt, DrawMenu, Help
         public static void AsciiArt()
         {
             Console.Clear();
@@ -71,7 +71,7 @@
 
         static void BankMenu()
         {
-
+            bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
             List<string> menuItems = new()
@@ -84,7 +84,7 @@
                 "Logout"
             };
 
-            while (true)
+            while (runMenu)
             {
                 string selectedMenuItems = DrawMenu(menuItems, menuMsg);
                 switch (selectedMenuItems)
@@ -116,7 +116,8 @@
                         break;
                     case "Logout":
                         menuIndex = 0;
-                        return;
+                        runMenu = false;
+                        break;
                 }
             }
         }
