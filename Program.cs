@@ -7,7 +7,7 @@
             StartMenu();
         }
 
-        #region StartMenu, AsciiArt, DrawMenu, Help
+        #region StartMenu, BankMenu, AsciiArt, DrawMenu, Help
         public static void AsciiArt()
         {
             Console.Clear();
@@ -54,9 +54,9 @@
                 {
                     case "Log in":
                         BankMenu();
-                        Console.WriteLine(" Login would start here");
-                        Console.WriteLine(" Enter any key to continue");
-                        Console.ReadKey();
+                        //Console.WriteLine(" Login would start here");
+                        //Console.WriteLine(" Enter any key to continue");
+                        //Console.ReadKey();
                         break;
                     case "Help":
                         Help();
@@ -71,7 +71,7 @@
 
         static void BankMenu()
         {
-
+            bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
             List<string> menuItems = new()
@@ -79,29 +79,44 @@
                 "Balance",
                 "Transfer",
                 "Withdraw",
+                "Loan",
                 "Account",
-                "Exit"
+                "Logout"
             };
 
-            while (true)
+            while (runMenu)
             {
                 string selectedMenuItems = DrawMenu(menuItems, menuMsg);
                 switch (selectedMenuItems)
                 {
                     case "Balance":
-                        Console.WriteLine("Balance Would start here");
+                        Console.WriteLine(" Balance Would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Transfer":
-                        Console.WriteLine("Transfer would start here");
+                        Console.WriteLine(" Transfer would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Withdraw":
-                        Console.WriteLine("Transfer would start here");
+                        Console.WriteLine(" Withdraw would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case "Loan":
+                        Console.WriteLine(" Loan would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case "Account":
-                        Console.WriteLine("Transfer would start here");
+                        Console.WriteLine(" Account would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
-                    case "Exit":
-                        Console.WriteLine("Exit would start here");
+                    case "Logout":
+                        menuIndex = 0;
+                        runMenu = false;
                         break;
                 }
             }
