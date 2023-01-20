@@ -4,7 +4,15 @@
     {
         static void Main(string[] args)
         {
-            StartMenu();
+            // StartMenu();
+
+            List<UserModel> users = SQLconnection.LoadBankUsers();
+            Console.WriteLine($"users length: {users.Count}");
+
+            foreach (UserModel user in users)
+            {
+                Console.WriteLine(user.first_name);
+            }
         }
 
         #region StartMenu, BankMenu, AsciiArt, DrawMenu, Help
