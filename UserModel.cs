@@ -16,6 +16,15 @@ namespace group_project_bank_csharp
 
         public string pin_code { get; set; }
 
+        public int role_id { get; set; }
+
+        public int branch_id { get; set; }
+
+        public void info()
+        {
+            Console.WriteLine($"ID: {id}\nFirst name: {first_name}\nLast name: {last_name}\nPin Code: {pin_code}\nRole ID: {role_id}\nBranch ID: {branch_id}");
+        }
+
         /*
         public string FullName
         {

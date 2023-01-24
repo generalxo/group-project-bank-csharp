@@ -4,15 +4,16 @@
     {
         static void Main(string[] args)
         {
-            // StartMenu();
+            StartMenu();
 
-            List<UserModel> users = SQLconnection.LoadBankUsers();
-            Console.WriteLine($"users length: {users.Count}");
+            //Console.WriteLine($"users length: {users.Count}");
 
-            foreach (UserModel user in users)
-            {
-                Console.WriteLine(user.first_name);
-            }
+            //foreach (UserModel user in users)
+            //{
+            //    Console.WriteLine(user.first_name);
+            //    Console.WriteLine(user.info);
+            //}
+
         }
 
         #region StartMenu, BankMenu, AsciiArt, DrawMenu, Help
@@ -61,7 +62,8 @@
                 switch (selectedMenuItem)
                 {
                     case "Log in":
-                        BankMenu();
+                        Login();
+                        
                         //Console.WriteLine(" Login would start here");
                         //Console.WriteLine(" Enter any key to continue");
                         //Console.ReadKey();
@@ -202,6 +204,40 @@
             Console.WriteLine(" Press any key to continue");
             Console.ReadKey();
             Console.Clear();
+        }
+
+        public static void Login()
+        {
+            string firstName, lastName, pinCode;
+
+            Console.Write("Please enter your name: ");
+            firstName = Console.ReadLine();
+
+            Console.Write("Please enter your lastname: ");
+            lastName = Console.ReadLine();
+
+            Console.Write("Please enter your Pin code: ");
+            pinCode = Console.ReadLine();
+
+            if (firstName == null || lastName == null || pinCode == null)
+            {
+                Console.WriteLine("User does not exist.\nPlease try again.");
+            }
+            else
+            {
+                List<UserModel> checkUsers = SQLconnection.CheckLogin(firstName, lastName, pinCode);
+
+                if (checkUsers.Count < 1)
+                {
+                    Console.WriteLine("Failed loggin attempt.");
+                    Console.WriteLine(checkUsers.Count);
+                    Console.ReadLine();
+                }
+                else
+                {
+                    BankMenu();
+                }
+            }
         }
         #endregion
     }
