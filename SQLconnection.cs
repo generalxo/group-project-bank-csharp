@@ -1,11 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace group_project_bank_csharp
 {
@@ -55,6 +51,17 @@ namespace group_project_bank_csharp
         //    // ...?
 
         //}
+
+        public static List<BankAccountModel> LoadBankAccounts(int user_id)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<BankAccountModel>($"SELECT * FROM bank_account WHERE user_id = '{user_id}'", new DynamicParameters());
+                return output.ToList();
+            }
+        }
+
+
 
         public static void SaveBankUser(UserModel user)
         {

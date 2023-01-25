@@ -63,7 +63,7 @@
                 {
                     case "Log in":
                         Login();
-                        
+
                         //Console.WriteLine(" Login would start here");
                         //Console.WriteLine(" Enter any key to continue");
                         //Console.ReadKey();
@@ -79,7 +79,7 @@
 
         }
 
-        static void BankMenu()
+        static void BankMenu(List<UserModel> currenUser)
         {
             bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
@@ -100,9 +100,18 @@
                 switch (selectedMenuItems)
                 {
                     case "Balance":
-                        Console.WriteLine(" Balance Would start here");
-                        Console.WriteLine(" Press any key to continue");
+                        //Console.WriteLine(" Balance Would start here");
+                        //Console.WriteLine(" Press any key to continue");
+                        //Console.ReadKey();
+                        List<BankAccountModel> bankAccounts = SQLconnection.LoadBankAccounts(currenUser[0].id);
+
+                        for (int i = 0; i < bankAccounts.Count; i++)
+                        {
+                            //Console.WriteLine(bankAccounts[i].balance);
+                            bankAccounts[i].info();
+                        }
                         Console.ReadKey();
+
                         break;
                     case "Transfer":
                         Console.WriteLine(" Transfer would start here");
@@ -235,7 +244,8 @@
                 }
                 else
                 {
-                    BankMenu();
+                    checkUsers[0].Info();
+                    BankMenu(checkUsers);
                 }
             }
         }

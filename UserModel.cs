@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace group_project_bank_csharp
+﻿namespace group_project_bank_csharp
 {
     public class UserModel
     {
@@ -20,19 +14,12 @@ namespace group_project_bank_csharp
 
         public int branch_id { get; set; }
 
-        public void info()
+        public void Info()
         {
             Console.WriteLine($"ID: {id}\nFirst name: {first_name}\nLast name: {last_name}\nPin Code: {pin_code}\nRole ID: {role_id}\nBranch ID: {branch_id}");
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
         }
 
-        /*
-        public string FullName
-        {
-            get
-            {
-                return $"{FirstName} {LastName}";
-            }
-        }
-        */
     }
 }
