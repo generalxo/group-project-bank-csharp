@@ -109,12 +109,13 @@
 
                         break;
                     case "Transfer":
+                        
                         Console.WriteLine(" Transfer would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
                     case "Withdraw":
-                        Console.WriteLine(" Withdraw would start here");
+                        Deposit(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
@@ -124,6 +125,7 @@
                         Console.ReadKey();
                         break;
                     case "Account":
+                        
                         Console.WriteLine(" Account would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
@@ -209,16 +211,54 @@
             Console.ReadKey();
             Console.Clear();
         }
+        public static void Deposit(int userID)
+        {
+            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+
+            for(int i = 0; i < checkaccounts.Count; i++)
+            {
+                Console.WriteLine($"{checkaccounts[i].id}: {checkaccounts[i].name}");
+            }
+
+            Console.WriteLine("\nWhich account do you wish to withdraw money from?");
+            Console.Write("===> ");
+            string accountChoice = Console.ReadLine();
+            int.TryParse(accountChoice, out int accountID);
+
+            Console.WriteLine("\nHow much do you want to withdraw to your account?");
+            Console.Write("===> ");
+            string? transfer = Console.ReadLine();
+            decimal amount;
+            decimal.TryParse(transfer, out amount);
+
+            Console.WriteLine(checkaccounts.Count);
+
+            if (amount <= 0)
+            {
+                Console.WriteLine("Amount can be not negative"); //message for negative amount
+            }
+            /*
+            else if (checkaccounts[userID].balance < amount)
+            {
+                Console.WriteLine("\n\tERROR! Not allowed. You don't have enough money");
+            }
+            */
+            else
+            {
+                checkaccounts[userID].balance -= amount;
+                SQLconnection.UpdateAccountBalance(userID, accountID, amount);
+            }
+        }
 
         public static void Login()
         {
             string? firstName, lastName, pinCode;
 
             Console.WriteLine("");
-            Console.Write($" Please enter your name: ");
+            Console.Write($" Please enter your first name: ");
             firstName = Console.ReadLine();
 
-            Console.Write($" Please enter your lastname: ");
+            Console.Write($" Please enter your last name: ");
             lastName = Console.ReadLine();
 
             Console.Write($" Please enter your Pin code: ");

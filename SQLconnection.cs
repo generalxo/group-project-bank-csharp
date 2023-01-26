@@ -11,7 +11,6 @@ namespace group_project_bank_csharp
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-
                 var output = cnn.Query<UserModel>($"SELECT * FROM bank_user", new DynamicParameters());
                 //Console.WriteLine(output);
                 return output.ToList();
@@ -33,6 +32,13 @@ namespace group_project_bank_csharp
             // Kopplar upp mot DB:n
             // läser ut alla Users
             // Returnerar en lista av Users
+        }
+        public static void UpdateAccountBalance(int user_id, int id, decimal amount)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                cnn.Execute($"UPDATE bank_account SET balance = '{amount}' WHERE id = '{id}' AND user_id = '{user_id}'");
+            }
         }
 
         //public static list<bankaccountmodel> getuseraccounts(int user_id)
@@ -61,8 +67,6 @@ namespace group_project_bank_csharp
             }
         }
 
-
-
         public static void SaveBankUser(UserModel user)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
@@ -72,11 +76,9 @@ namespace group_project_bank_csharp
             }
         }
 
-
         private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
-
     }
 }
