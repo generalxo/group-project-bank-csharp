@@ -109,8 +109,7 @@
 
                         break;
                     case "Transfer":
-                        
-                        Console.WriteLine(" Transfer would start here");
+                        Transfer(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
@@ -125,7 +124,7 @@
                         Console.ReadKey();
                         break;
                     case "Account":
-                        
+
                         Console.WriteLine(" Account would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
@@ -211,11 +210,73 @@
             Console.ReadKey();
             Console.Clear();
         }
+
+        public static void Transfer(int userID)
+        {
+            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+
+            Console.WriteLine("\nWhich account do you wish to transfer money from?");
+
+            int accountID = DisplayAndSelectAccount(checkaccounts);
+
+            Console.WriteLine($"Balance transfer from {checkaccounts[accountID].name}: {checkaccounts[accountID].balance}");
+            decimal balanceTransferFrom = checkaccounts[accountID].balance;
+
+            decimal amount = GetTransferAmount();
+
+            if (amount > balanceTransferFrom)
+            {
+                Console.WriteLine("ERROR! Invalid amount");
+            }
+            else
+            {
+                decimal newWithdraw = SQLconnection.UpdateBalanceForWithdraw(userID, amount, checkaccounts[accountID].id, balanceTransferFrom);
+
+                Console.WriteLine("\nWhich account do you wish to transfer money to?");
+
+                int accountIdTransfer = DisplayAndSelectAccount(checkaccounts);
+
+                Console.WriteLine($"Balance transfer to {checkaccounts[accountIdTransfer].name}: {checkaccounts[accountIdTransfer].balance}");
+                decimal balanceTransferTo = checkaccounts[accountIdTransfer].balance;
+
+                decimal newDeposit = SQLconnection.UpdateBalanceForDeposit(userID, amount, checkaccounts[accountIdTransfer].id, balanceTransferTo);
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("\nMoney transfered!".ToUpper());
+                Console.ResetColor();
+            }
+        }
+
+        public static decimal GetTransferAmount()
+        {
+            Console.WriteLine("\nHow much do you want to transfer?");
+            Console.Write("===> ");
+            string? transfer = Console.ReadLine();
+            decimal amount;
+            decimal.TryParse(transfer, out amount);
+            return amount;
+
+        }
+
+        public static int DisplayAndSelectAccount(List<BankAccountModel> checkaccounts)
+        {
+            for (int i = 0; i < checkaccounts.Count; i++)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"\n{i + 1}: {checkaccounts[i].name}");
+                Console.ResetColor();
+            }
+
+            Console.Write("\nType ===> ");
+            string? accountChoice = Console.ReadLine();
+            int.TryParse(accountChoice, out int accountID);
+            return accountID -= 1;
+        }
         public static void Deposit(int userID)
         {
             List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
 
-            for(int i = 0; i < checkaccounts.Count; i++)
+            for (int i = 0; i < checkaccounts.Count; i++)
             {
                 Console.WriteLine($"{checkaccounts[i].id}: {checkaccounts[i].name}");
             }
