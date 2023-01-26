@@ -4,16 +4,10 @@
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(" Press any key to continue");
+            Console.ReadKey();
+
             StartMenu();
-
-            //Console.WriteLine($"users length: {users.Count}");
-
-            //foreach (UserModel user in users)
-            //{
-            //    Console.WriteLine(user.first_name);
-            //    Console.WriteLine(user.info);
-            //}
-
         }
 
         #region StartMenu, BankMenu, AsciiArt, DrawMenu, Help
@@ -79,7 +73,7 @@
 
         }
 
-        static void BankMenu(List<UserModel> currenUser)
+        static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
@@ -103,13 +97,14 @@
                         //Console.WriteLine(" Balance Would start here");
                         //Console.WriteLine(" Press any key to continue");
                         //Console.ReadKey();
-                        List<BankAccountModel> bankAccounts = SQLconnection.LoadBankAccounts(currenUser[0].id);
+                        List<BankAccountModel> bankAccounts = SQLconnection.LoadBankAccounts(currentUser[0].id);
 
                         for (int i = 0; i < bankAccounts.Count; i++)
                         {
                             //Console.WriteLine(bankAccounts[i].balance);
-                            bankAccounts[i].info();
+                            bankAccounts[i].Info();
                         }
+                        Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
 
                         break;
@@ -217,15 +212,16 @@
 
         public static void Login()
         {
-            string firstName, lastName, pinCode;
+            string? firstName, lastName, pinCode;
 
-            Console.Write("Please enter your name: ");
+            Console.WriteLine("");
+            Console.Write($" Please enter your name: ");
             firstName = Console.ReadLine();
 
-            Console.Write("Please enter your lastname: ");
+            Console.Write($" Please enter your lastname: ");
             lastName = Console.ReadLine();
 
-            Console.Write("Please enter your Pin code: ");
+            Console.Write($" Please enter your Pin code: ");
             pinCode = Console.ReadLine();
 
             if (firstName == null || lastName == null || pinCode == null)

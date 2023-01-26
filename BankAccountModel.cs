@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace group_project_bank_csharp
+﻿namespace group_project_bank_csharp
 {
     public class BankAccountModel
     {
@@ -20,9 +14,9 @@ namespace group_project_bank_csharp
 
         public int currency_id { get; set; }
 
-        public void info()
+        public void Info()
         {
-            Console.WriteLine($"ID: {id}\nAccount name: {name}\nInterest rate: {interest_rate}\nBalance: {balance}\nUser ID: {user_id}\nCurrency ID: {currency_id}");
+            Console.WriteLine($" ID: {id}\n Account name: {name}\n Interest rate: {interest_rate}\n Balance: {balance}\n User ID: {user_id}\n Currency ID: {currency_id}");
         }
     }
 }
