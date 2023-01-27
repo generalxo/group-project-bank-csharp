@@ -283,7 +283,7 @@
 
             Console.WriteLine("\nWhich account do you wish to withdraw money from?");
             Console.Write("===> ");
-            string accountChoice = Console.ReadLine();
+            string? accountChoice = Console.ReadLine();
             int.TryParse(accountChoice, out int accountID);
 
             Console.WriteLine("\nHow much do you want to withdraw to your account?");
@@ -307,7 +307,7 @@
             else
             {
                 checkaccounts[userID].balance -= amount;
-                SQLconnection.UpdateAccountBalance(userID, accountID, amount);
+                SQLconnection.UpdateBalanceForWithdraw(userID, amount, accountID, checkaccounts[userID].balance);
             }
         }
 

@@ -4,7 +4,7 @@
     {
         public int id { get; set; }
 
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
 
         public decimal interest_rate { get; set; }
 
