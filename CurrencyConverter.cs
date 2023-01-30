@@ -18,14 +18,9 @@
 
         }
 
-        public string PrintCurrencyConverterToDollar(double currencyAmount)
+        public string Info()
         {
-            return $"\n\tExchange Rate:{exchange_rate}\n\texchanged value: {CurrencyConverterCalculatorSEKToDollar(currencyAmount, exchange_rate)}";
-        }
-
-        public string PrintCurrencyConverterToSek(double currencyAmount)
-        {
-            return $"\n\tExchange Rate:{exchange_rate}\n\texchanged value: {CurrencyConverterCalculatorSEKToDollar(currencyAmount, exchange_rate)}";
+            return $" id: {id}\n name: {name}\n exchange_rate: {exchange_rate}";
         }
     }
 }

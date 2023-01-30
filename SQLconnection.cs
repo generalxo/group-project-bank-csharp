@@ -2,6 +2,7 @@
 using Npgsql;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 
 namespace group_project_bank_csharp
 {
@@ -77,7 +78,7 @@ namespace group_project_bank_csharp
 
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{balance - amount}' WHERE id = '{id}' AND user_id = '{userId}'");
+                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{(balance - amount).ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{userId}'", new DynamicParameters());
                 return newBalance;
             }
         }
@@ -88,19 +89,10 @@ namespace group_project_bank_csharp
 
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{balance + amount}' WHERE id = '{id}' AND user_id = '{userId}'");
+                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{(balance + amount).ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{userId}'", new DynamicParameters());
                 return newBalance;
             }
         }
-
-        //public static List<CurrencyConverter> LoadBankCurrency(double exchangeRate, int currencyId)
-        //{
-        //    using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
-        //    {
-        //        var output = cnn.Query<CurrencyConverter>($"SELECT * FROM bank_currency WHERE id = '{currencyId}' AND exchange_rate = '{exchangeRate}'", new DynamicParameters());
-        //        return output.ToList();
-        //    }
-        //}
 
         public static List<CurrencyConverter> LoadBankCurrency()
         {

@@ -1,4 +1,6 @@
-﻿namespace group_project_bank_csharp
+﻿using System.Globalization;
+
+namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -218,13 +220,12 @@
             Console.WriteLine("\nWhich account do you wish to transfer money from?");
 
             int accountID = DisplayAndSelectAccount(checkaccounts);
-
-            Console.WriteLine($"Balance transfer from {checkaccounts[accountID].name}: {checkaccounts[accountID].balance}");
-            decimal balanceTransferFrom = checkaccounts[accountID].balance;
+            decimal balanceAccount = checkaccounts[accountID].balance;
+            Console.WriteLine($"Balance transfer from {checkaccounts[accountID].name}: {balanceAccount}");
 
             decimal amount = GetTransferAmount();
 
-            if (amount > balanceTransferFrom)
+            if (amount > balanceAccount)
             {
                 Console.WriteLine("ERROR! Invalid amount");
             }
@@ -232,17 +233,17 @@
             {
                 Console.WriteLine("\nWhich account do you wish to transfer money to?");
 
-                int accountIdTransfer = DisplayAndSelectAccount(checkaccounts);
+                int accountIdTarget = DisplayAndSelectAccount(checkaccounts);
+                decimal balanceTransferTarget = checkaccounts[accountIdTarget].balance;
+                Console.WriteLine($"Balance transfer to {checkaccounts[accountIdTarget].name}: {balanceTransferTarget}");
 
-                Console.WriteLine($"Balance transfer to {checkaccounts[accountIdTransfer].name}: {checkaccounts[accountIdTransfer].balance}");
-                decimal balanceTransferTo = checkaccounts[accountIdTransfer].balance;
-
-                if (checkaccounts[accountID].currency_id != checkaccounts[accountIdTransfer].currency_id)
+                if (checkaccounts[accountID].currency_id != checkaccounts[accountIdTarget].currency_id)
                 {
                     CurrencyConverter currencyConverter = new CurrencyConverter();
                     List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
+
                     //to withdraw
-                    SQLconnection.UpdateBalanceForWithdraw(userID, amount, checkaccounts[accountID].id, balanceTransferFrom);
+                    SQLconnection.UpdateBalanceForWithdraw(userID, amount, checkaccounts[accountID].id, balanceAccount);
 
                     double amountToDouble = Decimal.ToDouble(amount);
 
@@ -252,32 +253,30 @@
 
                         if (checkaccounts[accountID].currency_id == 1)
                         {
-
-                            currencyConverter.PrintCurrencyConverterToDollar(amountToDouble);
-                            double convertedAmountToDouble = currencyConverter.CurrencyConverterCalculatorSEKToDollar(amountToDouble, currencyDB[i].exchange_rate);
-                            decimal convertedAmount = Convert.ToDecimal(convertedAmountToDouble);
+                            double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToDollar(amountToDouble, currencyDB[i].exchange_rate);
+                            decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
 
                             //to deposit
-                            SQLconnection.UpdateBalanceForDeposit(userID, convertedAmount, checkaccounts[accountIdTransfer].id, balanceTransferTo);
+                            SQLconnection.UpdateBalanceForDeposit(userID, convertedAmount, checkaccounts[accountIdTarget].id, balanceTransferTarget);
                         }
+
                         if (checkaccounts[accountID].currency_id == 2)
                         {
-                            currencyConverter.PrintCurrencyConverterToSek(amountToDouble);
-                            double convertedAmountToDouble = currencyConverter.CurrencyConverterCalculatorDollarToSEK(amountToDouble, currencyDB[i].exchange_rate);
-                            decimal convertedAmount = Convert.ToDecimal(convertedAmountToDouble);
+                            double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorDollarToSEK(amountToDouble, currencyDB[i].exchange_rate);
+                            decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
 
                             //to deposit
-                            SQLconnection.UpdateBalanceForDeposit(userID, convertedAmount, checkaccounts[accountIdTransfer].id, balanceTransferTo);
+                            SQLconnection.UpdateBalanceForDeposit(userID, convertedAmount, checkaccounts[accountIdTarget].id, balanceTransferTarget);
                         }
                     }
                 }
                 else
                 {
                     //to withdraw
-                    SQLconnection.UpdateBalanceForWithdraw(userID, amount, checkaccounts[accountID].id, balanceTransferFrom);
+                    SQLconnection.UpdateBalanceForWithdraw(userID, amount, checkaccounts[accountID].id, balanceAccount);
 
                     //to deposit
-                    SQLconnection.UpdateBalanceForDeposit(userID, amount, checkaccounts[accountIdTransfer].id, balanceTransferTo);
+                    SQLconnection.UpdateBalanceForDeposit(userID, amount, checkaccounts[accountIdTarget].id, balanceTransferTarget);
                 }
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
