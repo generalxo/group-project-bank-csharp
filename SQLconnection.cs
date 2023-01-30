@@ -67,6 +67,14 @@ namespace group_project_bank_csharp
             }
         }
 
+        public static void OpenAccount(BankAccountModel user)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                cnn.Execute("INSERT INTO bank_account (name, interest_rate, user_id, currency_id, balance) VALUES (@name, @interest_rate, @user_id, @currency_id, @balance)", user);
+            }
+        }
+
         public static void SaveBankUser(UserModel user)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))

@@ -1,4 +1,7 @@
-﻿namespace group_project_bank_csharp
+﻿using System.Runtime.InteropServices;
+using System.Security.Principal;
+
+namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -125,8 +128,7 @@
                         Console.ReadKey();
                         break;
                     case "Account":
-                        
-                        Console.WriteLine(" Account would start here");
+                        OpenAccount(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
@@ -247,6 +249,80 @@
             {
                 checkaccounts[userID].balance -= amount;
                 SQLconnection.UpdateAccountBalance(userID, accountID, amount);
+            }
+        }
+
+        public static void OpenAccount(int userID)
+        {
+            Console.WriteLine("\nWhat type of account do you want to open?");
+            Console.WriteLine("\nChecking");
+            Console.WriteLine("Salary");
+            Console.WriteLine("Savings");
+            Console.Write("===> ");
+            string accountType = Console.ReadLine();
+
+            List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
+
+            if (!string.IsNullOrEmpty(accountType)) //Checks to see if the account type isn't null or empty before proceeding
+            {
+                bool hasAccountType = false;
+
+                if (accountType == "Checking")
+                {
+                    foreach (BankAccountModel bankAccountModel in checkAccounts)
+                    {
+                        if (bankAccountModel.name == "Checking")
+                        {
+                            hasAccountType = true;
+                            break;
+                        }
+                    }
+                }
+                else if (accountType == "Salary")
+                {
+                    foreach (BankAccountModel bankAccountModel in checkAccounts)
+                    {
+                        if (bankAccountModel.name == "Salary")
+                        {
+                            hasAccountType = true;
+                            break;
+                        }
+                    }
+                }
+                else if (accountType == "Savings")
+                {
+                    foreach (BankAccountModel bankAccountModel in checkAccounts)
+                    {
+                        if (bankAccountModel.name == "Savings")
+                        {
+                            hasAccountType = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasAccountType)
+                {
+                    Console.WriteLine("\nERROR: You have already opened an account of this type"); //The account already exists in the database
+                }
+                else
+                {
+                    BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
+                    { 
+                        name = accountType,
+                        interest_rate = 0,
+                        user_id = userID,
+                        currency_id = 1,
+                        balance = 0
+
+                    };
+                    SQLconnection.OpenAccount(bankAccountModel);
+                    Console.WriteLine("\nAccount successfully opened");
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
             }
         }
 
