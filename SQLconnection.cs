@@ -2,6 +2,7 @@
 using Npgsql;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 
 namespace group_project_bank_csharp
 {
@@ -11,6 +12,7 @@ namespace group_project_bank_csharp
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
+
                 var output = cnn.Query<UserModel>($"SELECT * FROM bank_user", new DynamicParameters());
                 //Console.WriteLine(output);
                 return output.ToList();
@@ -32,13 +34,6 @@ namespace group_project_bank_csharp
             // Kopplar upp mot DB:n
             // läser ut alla Users
             // Returnerar en lista av Users
-        }
-        public static void UpdateAccountBalance(int user_id, int id, decimal amount)
-        {
-            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
-            {
-                cnn.Execute($"UPDATE bank_account SET balance = '{amount}' WHERE id = '{id}' AND user_id = '{user_id}'");
-            }
         }
 
         //public static list<bankaccountmodel> getuseraccounts(int user_id)
@@ -67,6 +62,8 @@ namespace group_project_bank_csharp
             }
         }
 
+
+
         public static void SaveBankUser(UserModel user)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
@@ -76,9 +73,39 @@ namespace group_project_bank_csharp
             }
         }
 
+        public static decimal UpdateBalanceForWithdraw(int userId, decimal amount, int id, decimal balance)
+        {
+
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{(balance - amount).ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{userId}'", new DynamicParameters());
+                return newBalance;
+            }
+        }
+
+
+        public static decimal UpdateBalanceForDeposit(int userId, decimal amount, int id, decimal balance)
+        {
+
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{(balance + amount).ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{userId}'", new DynamicParameters());
+                return newBalance;
+            }
+        }
+
+        public static List<CurrencyConverter> LoadBankCurrency()
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<CurrencyConverter>($"SELECT * FROM bank_currency", new DynamicParameters());
+                return output.ToList();
+            }
+        }
         private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
+
     }
 }
