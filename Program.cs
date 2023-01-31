@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace group_project_bank_csharp
+﻿namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -93,16 +91,30 @@ namespace group_project_bank_csharp
                 switch (selectedMenuItems)
                 {
                     case "Balance":
-                        //Console.WriteLine(" Balance Would start here");
-                        //Console.WriteLine(" Press any key to continue");
-                        //Console.ReadKey();
-                        List<BankAccountModel> bankAccounts = SQLconnection.LoadBankAccounts(currentUser[0].id);
+                        Console.Clear();
+                        Console.WriteLine("");
+                        Console.WriteLine(" Your Balance");
+                        Console.WriteLine("");
 
+                        //Load current user bank accounts & all currencies
+                        List<BankAccountModel> bankAccounts = SQLconnection.LoadBankAccounts(currentUser[0].id);
+                        List<CurrencyConverter> currencies = SQLconnection.LoadBankCurrency();
+
+                        //Loop for each account
                         for (int i = 0; i < bankAccounts.Count; i++)
                         {
-                            //Console.WriteLine(bankAccounts[i].balance);
-                            bankAccounts[i].Info();
+                            //Loop for each currency
+                            for (int j = 0; j < currencies.Count; j++)
+                            {
+                                //check if account currency id == currencies_id --> display currency_name
+                                if (bankAccounts[i].currency_id == currencies[j].id)
+                                {
+                                    Console.WriteLine($" {bankAccounts[i].name} {bankAccounts[i].balance}: {currencies[j].name}");
+                                }
+                            }
                         }
+
+                        Console.WriteLine("");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
 
