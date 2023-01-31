@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "group-project-bank-csharp": {
+      "commandName": "Project"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    }
+  }
+}
