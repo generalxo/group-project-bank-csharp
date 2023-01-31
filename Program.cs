@@ -6,9 +6,6 @@ namespace group_project_bank_csharp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(" Press any key to continue");
-            Console.ReadKey();
-
             StartMenu();
         }
 
@@ -116,7 +113,7 @@ namespace group_project_bank_csharp
                         Console.ReadKey();
                         break;
                     case "Withdraw":
-                        Deposit(currentUser[0].id);
+                        Withdraw(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
@@ -344,42 +341,43 @@ namespace group_project_bank_csharp
                 return accountID -= 1;
             }
         }
-        public static void Deposit(int userID)
+        public static void Withdraw(int userID)
         {
-            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+            decimal amount;
+            List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
 
-            for (int i = 0; i < checkaccounts.Count; i++)
+            Console.Clear();
+            Console.WriteLine("Which account do you wish to withdraw money from?\n");
+
+            for (int i = 0; i < checkAccounts.Count; i++)
             {
-                Console.WriteLine($"{checkaccounts[i].id}: {checkaccounts[i].name}");
+                Console.WriteLine($"{i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
             }
 
-            Console.WriteLine("\nWhich account do you wish to withdraw money from?");
-            Console.Write("===> ");
-            string? accountChoice = Console.ReadLine();
+            Console.Write("\nType ===> ");
+            string accountChoice = Console.ReadLine();
+
             int.TryParse(accountChoice, out int accountID);
+            accountID -= 1;
 
-            Console.WriteLine("\nHow much do you want to withdraw to your account?");
-            Console.Write("===> ");
+            Console.WriteLine("\nAmount to withdraw from your account?\n");
+            Console.Write("Type ===> ");
             string? transfer = Console.ReadLine();
-            decimal amount;
             decimal.TryParse(transfer, out amount);
-
-            Console.WriteLine(checkaccounts.Count);
 
             if (amount <= 0)
             {
-                Console.WriteLine("Amount can be not negative"); //message for negative amount
+                Console.WriteLine("Amount to witdraw cannot be a negative value."); //message for negative amount
             }
-            /*
-            else if (checkaccounts[userID].balance < amount)
+            else if (checkAccounts[accountID].balance < amount)
             {
                 Console.WriteLine("\n\tERROR! Not allowed. You don't have enough money");
             }
-            */
             else
             {
-                checkaccounts[userID].balance -= amount;
-                SQLconnection.UpdateBalanceForWithdraw(userID, amount, accountID, checkaccounts[userID].balance);
+                amount = checkAccounts[accountID].balance -= amount;
+                Console.WriteLine($"\nAccount: {checkAccounts[accountID].name} New balance: {amount}");
+                SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
             }
         }
 
