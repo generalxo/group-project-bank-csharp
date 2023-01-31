@@ -242,7 +242,7 @@
             else
             {
                 amount = checkAccounts[accountID].balance -= amount;
-                Console.WriteLine($"Account: {checkAccounts[accountID].name} New balance: {amount}");
+                Console.WriteLine($"\nAccount: {checkAccounts[accountID].name} New balance: {amount}");
                 SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
             }
         }

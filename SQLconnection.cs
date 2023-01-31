@@ -2,6 +2,7 @@
 using Npgsql;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 
 namespace group_project_bank_csharp
 {
@@ -45,7 +46,7 @@ namespace group_project_bank_csharp
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                cnn.Execute($"UPDATE bank_account SET balance = '{amount}' WHERE id = '{id}' AND user_id = '{user_id}'");
+                cnn.Execute($"UPDATE bank_account SET balance = '{amount.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{user_id}'");
             }
         }
 
