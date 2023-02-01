@@ -7,12 +7,12 @@
         public string name { get; set; } = string.Empty;
         //public decimal CurrencyAmount { get; set; }
 
-        public double CurrencyConverterCalculatorDollarToSEK(double currencyAmount, double exchange_rate)
+        public double CurrencyConverterCalculatorSomeCurrencyToSEK(double currencyAmount, double exchange_rate)
         {
             return currencyAmount * exchange_rate;
 
         }
-        public double CurrencyConverterCalculatorSEKToDollar(double currencyAmount, double exchange_rate)
+        public double CurrencyConverterCalculatorSEKToSomeCurrency(double currencyAmount, double exchange_rate)
         {
             return currencyAmount / exchange_rate;
 
