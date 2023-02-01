@@ -64,7 +64,7 @@ namespace group_project_bank_csharp
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                cnn.Execute($"UPDATE bank_account SET balance = '{amount.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{user_id}'");
+                cnn.Execute($"UPDATE bank_account SET balance = '{amount.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{user_id}'", new DynamicParameters());
             }
         }
 
@@ -74,27 +74,6 @@ namespace group_project_bank_csharp
             {
                 cnn.Execute("INSERT INTO bank_users (first_name, last_name, pin_code) VALUES (@first_name, @last_name, @pin_code)", user);
 
-            }
-        }
-
-        public static decimal UpdateBalanceForWithdraw(int userId, decimal amount, int id, decimal balance)
-        {
-
-            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
-            {
-                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{(balance - amount).ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{userId}'", new DynamicParameters());
-                return newBalance;
-            }
-        }
-
-
-        public static decimal UpdateBalanceForDeposit(int userId, decimal amount, int id, decimal balance)
-        {
-
-            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
-            {
-                var newBalance = cnn.Execute($"UPDATE bank_account SET balance = '{(balance + amount).ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{userId}'", new DynamicParameters());
-                return newBalance;
             }
         }
 
