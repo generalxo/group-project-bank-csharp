@@ -524,6 +524,30 @@
         public static void CreateNewUser()
         {
             //create new users
+            Console.Write("Please enter FirstName: ");
+            string? firstName = Console.ReadLine();
+
+            Console.Write("Please enter LastName: ");
+            string? lastName = Console.ReadLine();
+
+            Console.Write("Please enter PinCode: ");
+            string? pinCode = Console.ReadLine();
+
+            Console.Write("Please enter Role ID: ");
+            int.TryParse(Console.ReadLine(), out int roleId);
+
+            Console.Write("Please enter Branch ID: ");
+            int.TryParse(Console.ReadLine(), out int branchId);
+
+            UserModel newUser = new UserModel
+            {
+                first_name = firstName,
+                last_name = lastName,
+                pin_code = pinCode,
+                role_id = roleId,
+                branch_id = branchId
+            };
+            SQLconnection.SaveBankUser(newUser);
         }
 
         public static void Login()

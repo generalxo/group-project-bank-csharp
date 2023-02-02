@@ -4,11 +4,11 @@
     {
         public int id { get; set; }
 
-        public string first_name { get; set; } = string.Empty;
+        public string? first_name { get; set; } = string.Empty;
 
-        public string last_name { get; set; } = string.Empty;
+        public string? last_name { get; set; } = string.Empty;
 
-        public string pin_code { get; set; } = string.Empty;
+        public string? pin_code { get; set; } = string.Empty;
 
         public int role_id { get; set; }
 

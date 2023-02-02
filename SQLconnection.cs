@@ -72,7 +72,7 @@ namespace group_project_bank_csharp
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT INTO bank_users (first_name, last_name, pin_code) VALUES (@first_name, @last_name, @pin_code)", user);
+                cnn.Execute("INSERT INTO bank_user (first_name, last_name, pin_code, role_id, branch_id) VALUES (@first_name, @last_name, @pin_code, @role_id, @branch_id)", user);
 
             }
         }
