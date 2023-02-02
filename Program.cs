@@ -70,20 +70,51 @@
 
         }
 
+        enum userRoles
+        {
+            admin = 1,
+            client = 2,
+            clientAdmin = 3
+        }
+
         static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
-            List<string> menuItems = new()
+            List<string> menuItems = new List<string>();
+            int userTypeId = currentUser[0].role_id;
+
+            //if admin or clientAdmin
+            if (userTypeId == (int)userRoles.admin || userTypeId == (int)userRoles.clientAdmin)
             {
-                "Balance",
-                "Transfer",
-                "Withdraw",
-                "Loan",
-                "Account",
-                "Logout"
-            };
+                menuItems.AddRange(new List<string>()
+                {
+                    "Create New User",
+                    "AdminOption1",
+                    "AdminOption2",
+                });
+            }
+
+            //if client or clientAdmin
+            if (userTypeId == (int)userRoles.client || userTypeId == (int)userRoles.clientAdmin)
+            {
+                menuItems.AddRange(new List<string>()
+                {
+                    "Balance",
+                    "Transfer",
+                    "Withdraw",
+                    "Loan",
+                    "Account",
+                    "Logout"
+                });
+            }
+
+            //if admin add logout in the menu options
+            if (userTypeId == (int)userRoles.admin)
+            {
+                menuItems.Add("Logout");
+            }
 
             while (runMenu)
             {
@@ -137,6 +168,22 @@
                     case "Account":
 
                         OpenAccount(currentUser[0].id);
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case "Create New User":
+                        CreateNewUser();
+                        Console.WriteLine(" Create New Users would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case "AdminOption1":
+                        Console.WriteLine(" AdminOption1 would start here");
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case "AdminOption2":
+                        Console.WriteLine(" AdminOption2 would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
@@ -472,6 +519,11 @@
             {
                 Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
             }
+        }
+
+        public static void CreateNewUser()
+        {
+            //create new users
         }
 
         public static void Login()
