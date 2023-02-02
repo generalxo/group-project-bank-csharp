@@ -173,7 +173,6 @@
                         break;
                     case "Create New User":
                         CreateNewUser();
-                        Console.WriteLine(" Create New Users would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
