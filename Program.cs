@@ -517,19 +517,19 @@
 
             UserModel newUser = new UserModel
             {
-                first_name = UserModel.GetFirstName(),
-                last_name = UserModel.GetLastName(),
-                pin_code = UserModel.GetPinCode(),
-                role_id = UserModel.GetRoleID(),
-                branch_id = UserModel.GetBranchId(),
+                first_name = UserModel.GetInputFirstName(),
+                last_name = UserModel.GetInputLastName(),
+                pin_code = UserModel.GetInputPinCode(),
+                role_id = UserModel.GetInputRoleID(),
+                branch_id = UserModel.GetInputBranchId(),
             };
             SQLconnection.SaveBankUser(newUser);
         }
 
-        public static void InvalidInput()
+        public static void InvalidInput(string? input)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("INVALID INPUT! Try again.");
+            Console.WriteLine($"INVALID INPUT {input}! Try again.");
             Console.ResetColor();
         }
 

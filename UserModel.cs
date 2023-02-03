@@ -34,79 +34,74 @@
             Malmö = 2
         }
 
-        public static string GetFirstName()
+        public static string GetInputFirstName()
         {
             //get a valid first name
-            Console.Clear();
-            Console.Write("Please enter FirstName: ");
+            Console.Write("\nPlease enter FirstName: ");
             string? firstName = Console.ReadLine();
             while (firstName == "" || firstName == null)
             {
-                Program.InvalidInput();
-                Console.Write("Please enter FirstName: ");
+                Program.InvalidInput(firstName);
+                Console.Write("\nPlease enter FirstName: ");
                 firstName = Console.ReadLine();
             }
             return firstName;
         }
 
-        public static string GetLastName()
+        public static string GetInputLastName()
         {
             //get a valid last name
-            Console.Clear();
-            Console.Write("Please enter LastName: ");
+            Console.Write("\nPlease enter LastName: ");
             string? lastName = Console.ReadLine();
             while (lastName == "" || lastName == null)
             {
-                Program.InvalidInput();
-                Console.Write("Please enter LastName: ");
+                Program.InvalidInput(lastName);
+                Console.Write("\nPlease enter LastName: ");
                 lastName = Console.ReadLine();
             }
             return lastName;
         }
 
-        public static string GetPinCode()
+        public static string GetInputPinCode()
         {
             //get a valid pincode with 4 digits
-            Console.Clear();
-            Console.Write("Please enter PinCode: ");
+            Console.Write("\nPlease enter PinCode: ");
             string? pinCode = Console.ReadLine();
             while (pinCode?.Length != 4)
             {
-                Program.InvalidInput();
-                Console.WriteLine("You need to enter a 4 digit pin code");
-                Console.Write("Please enter PinCode: ");
+                Program.InvalidInput(pinCode);
+                Console.WriteLine("You need to enter a 4-digit pincode");
+                Console.Write("\nPlease enter PinCode: ");
                 pinCode = Console.ReadLine();
             }
             return pinCode;
         }
 
-        public static int GetRoleID()
+        public static int GetInputRoleID()
         {
             //get a valid role id
-            Console.Clear();
-            Console.Write("Please enter Role ID: ");
+            Console.Write("\nPlease enter Role ID: ");
             int.TryParse(Console.ReadLine(), out int roleId);
             while (roleId != (int)UserRoles.admin && roleId != (int)UserRoles.client && roleId != (int)UserRoles.clientAdmin)
             {
-                Program.InvalidInput();
+                Program.InvalidInput(roleId.ToString());
                 Console.WriteLine("You need to enter a valid Role ID");
-                Console.Write("Please enter Role ID: ");
+                Console.Write("\nPlease enter Role ID: ");
                 int.TryParse(Console.ReadLine(), out roleId);
             }
             return roleId;
         }
 
-        public static int GetBranchId()
+        public static int GetInputBranchId()
         {
             //get a valid branch id
-            Console.Clear();
-            Console.Write("Please enter Branch ID: ");
+            Console.Write("\nPlease enter Branch ID: ");
             int.TryParse(Console.ReadLine(), out int branchId);
             while (branchId != (int)UserBranchs.Stockholm && branchId != (int)UserBranchs.Malmö)
             {
-                Program.InvalidInput();
+                Program.InvalidInput(branchId.ToString());
                 Console.WriteLine("You need to enter a valid Branch ID");
-                Console.Write("Please enter Branch ID: ");
+                Console.Write("\nPlease enter Branch ID: ");
                 int.TryParse(Console.ReadLine(), out branchId);
             }
             return branchId;
