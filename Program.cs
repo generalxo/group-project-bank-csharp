@@ -69,14 +69,6 @@
             }
 
         }
-
-        enum userRoles
-        {
-            admin = 1,
-            client = 2,
-            clientAdmin = 3
-        }
-
         static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
@@ -86,7 +78,7 @@
             int userTypeId = currentUser[0].role_id;
 
             //if admin or clientAdmin
-            if (userTypeId == (int)userRoles.admin || userTypeId == (int)userRoles.clientAdmin)
+            if (userTypeId == (int)UserModel.UserRoles.admin || userTypeId == (int)UserModel.UserRoles.clientAdmin)
             {
                 menuItems.AddRange(new List<string>()
                 {
@@ -97,7 +89,7 @@
             }
 
             //if client or clientAdmin
-            if (userTypeId == (int)userRoles.client || userTypeId == (int)userRoles.clientAdmin)
+            if (userTypeId == (int)UserModel.UserRoles.client || userTypeId == (int)UserModel.UserRoles.clientAdmin)
             {
                 menuItems.AddRange(new List<string>()
                 {
@@ -111,7 +103,7 @@
             }
 
             //if admin add logout in the menu options
-            if (userTypeId == (int)userRoles.admin)
+            if (userTypeId == (int)UserModel.UserRoles.admin)
             {
                 menuItems.Add("Logout");
             }
@@ -522,31 +514,23 @@
 
         public static void CreateNewUser()
         {
-            //create new users
-            Console.Write("Please enter FirstName: ");
-            string? firstName = Console.ReadLine();
-
-            Console.Write("Please enter LastName: ");
-            string? lastName = Console.ReadLine();
-
-            Console.Write("Please enter PinCode: ");
-            string? pinCode = Console.ReadLine();
-
-            Console.Write("Please enter Role ID: ");
-            int.TryParse(Console.ReadLine(), out int roleId);
-
-            Console.Write("Please enter Branch ID: ");
-            int.TryParse(Console.ReadLine(), out int branchId);
 
             UserModel newUser = new UserModel
             {
-                first_name = firstName,
-                last_name = lastName,
-                pin_code = pinCode,
-                role_id = roleId,
-                branch_id = branchId
+                first_name = UserModel.GetFirstName(),
+                last_name = UserModel.GetLastName(),
+                pin_code = UserModel.GetPinCode(),
+                role_id = UserModel.GetRoleID(),
+                branch_id = UserModel.GetBranchId(),
             };
             SQLconnection.SaveBankUser(newUser);
+        }
+
+        public static void InvalidInput()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("INVALID INPUT! Try again.");
+            Console.ResetColor();
         }
 
         public static void Login()
