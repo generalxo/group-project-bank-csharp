@@ -48,21 +48,21 @@
 
             while (true)
             {
-                string selectedMenuItem = DrawMenu(menuItems, menuMsg);
+                int selectedMenuItem = DrawMenu(menuItems, menuMsg);
                 //Switch for the selectedMenuItem string that DrawMenu returns
                 switch (selectedMenuItem)
                 {
-                    case "Log in":
+                    case 0:
                         Login();
 
                         //Console.WriteLine(" Login would start here");
                         //Console.WriteLine(" Enter any key to continue");
                         //Console.ReadKey();
                         break;
-                    case "Help":
+                    case 1:
                         Help();
                         break;
-                    case "Exit":
+                    case 2:
                         Environment.Exit(0);
                         break;
                 }
@@ -85,12 +85,13 @@
                 "Logout"
             };
 
+
             while (runMenu)
             {
-                string selectedMenuItems = DrawMenu(menuItems, menuMsg);
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
                 switch (selectedMenuItems)
                 {
-                    case "Balance":
+                    case 0:
                         Console.Clear();
                         Console.WriteLine("");
                         Console.WriteLine(" Your Balance");
@@ -119,28 +120,27 @@
                         Console.ReadKey();
 
                         break;
-                    case "Transfer":
+                    case 1:
                         Transfer(currentUser[0].id);
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
+                        //Console.WriteLine(" Press any key to continue");
+                        //Console.ReadKey();
                         break;
-                    case "Withdraw":
+                    case 2:
                         Withdraw(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "Loan":
+                    case 3:
                         Console.WriteLine(" Loan would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "Account":
-
+                    case 4:
                         OpenAccount(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "Logout":
+                    case 5:
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -148,8 +148,11 @@
             }
         }
 
-        public static string DrawMenu(List<string> menuItem, string menuMsg)
+        public static int DrawMenu(List<string> menuItem, string menuMsg)
         {
+
+            //int menuIndex = 0;
+
             //Method takes in a List of strings and displays them. The static int menuIndex indicates which item the user is selecting
             //Method allows user to navigare the List of strings and select a string and return it
 
@@ -196,19 +199,19 @@
             //Right arrow key check
             else if (ckey.Key == ConsoleKey.RightArrow)
             {
-                return menuItem[menuIndex];
+                return menuIndex;
             }
             //Enter key check
             else if (ckey.Key == ConsoleKey.Enter)
             {
-                return menuItem[menuIndex];
+                return menuIndex;
             }
             else
             {
-                return "";
+                return 100;
             }
 
-            return "";
+            return 100;
         }
 
         public static void Help()
@@ -222,108 +225,236 @@
             Console.Clear();
         }
 
-        public static void Transfer(int userID)
+        //public static void Transfer(int userID)
+        //{
+        //    List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+
+        //    Console.WriteLine("\nWhich account do you wish to transfer money from?");
+
+        //    int accountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
+        //    bool userChoiceAccountIsValid = accountID != -1; //boolean to check option input for account's type
+
+        //    if (userChoiceAccountIsValid)
+        //    {
+        //        decimal balanceAccount = checkaccounts[accountID].balance;
+        //        Console.WriteLine($"Balance transfer from {checkaccounts[accountID].name}: {balanceAccount}");
+        //        decimal amount = GetTransferAmount();
+        //        decimal newBalanceAccount = balanceAccount - amount;
+
+        //        if (amount > balanceAccount)
+        //        {
+        //            Console.WriteLine("ERROR! Invalid amount");
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("\nWhich account do you wish to transfer money to?");
+
+        //            int accountIdTarget = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
+        //            bool userChoiceTargetAccountIsValid = accountIdTarget != -1;
+        //            decimal balanceTransferTarget = checkaccounts[accountIdTarget].balance;
+        //            decimal newBalanceTargetAccount = balanceTransferTarget + amount;
+
+        //            if (userChoiceTargetAccountIsValid)
+        //            {
+        //                Console.WriteLine($"\nBalance transfer to {checkaccounts[accountIdTarget].name}: {balanceTransferTarget}");
+
+        //                if (checkaccounts[accountID].currency_id != checkaccounts[accountIdTarget].currency_id)
+        //                {
+        //                    CurrencyConverter currencyConverter = new CurrencyConverter();
+        //                    List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
+
+        //                    //to withdraw                          
+        //                    SQLconnection.UpdateAccountBalance(newBalanceAccount, checkaccounts[accountID].id, userID);
+
+        //                    double amountToDouble = Decimal.ToDouble(amount);
+
+        //                    //loop between currencies
+        //                    for (int i = 0; i < currencyDB.Count; i++)
+        //                    {
+        //                        Console.WriteLine($"{currencyDB[i].id} {currencyDB[i].name} || Rate: {currencyDB[i].exchange_rate}");
+
+        //                        //if currency to withdraw is SEK
+        //                        if (checkaccounts[accountID].currency_id == 1)
+        //                        {
+        //                            double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(amountToDouble, currencyDB[i].exchange_rate);
+        //                            decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
+        //                            newBalanceTargetAccount = balanceTransferTarget + convertedAmount;
+
+        //                            //to deposit
+        //                            SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
+        //                        }
+
+        //                        //OLIVER TODO: change logic to accept another currency besides dollar
+        //                        if (checkaccounts[accountID].currency_id == 2) //if is dollar
+        //                        {
+        //                            double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
+        //                            decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
+        //                            newBalanceTargetAccount = balanceTransferTarget + convertedAmount;
+
+        //                            //to deposit
+        //                            SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    //to withdraw
+        //                    SQLconnection.UpdateAccountBalance(newBalanceAccount, checkaccounts[accountID].id, userID);
+
+        //                    //to deposit
+        //                    SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
+        //                }
+
+        //                Console.ForegroundColor = ConsoleColor.Cyan;
+        //                Console.WriteLine("\nMoney transfered!".ToUpper());
+        //                Console.ResetColor();
+
+        //            }
+        //            else
+        //            {
+        //                //wrong target
+        //                Console.ForegroundColor = ConsoleColor.Red;
+        //                Console.WriteLine("Invalid Account Target".ToUpper());
+        //                Console.ResetColor();
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.ForegroundColor = ConsoleColor.Red;
+        //        Console.WriteLine("Invalid Account".ToUpper());
+        //        Console.ResetColor();
+        //    }
+
+        //}
+
+        public decimal Exchange(decimal amount, int senderCurrencyId, int reciverCurrencyId)
         {
-            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+            List<CurrencyConverter> currencyModel = SQLconnection.LoadBankCurrency();
 
-            Console.WriteLine("\nWhich account do you wish to transfer money from?");
-
-            int accountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
-            bool userChoiceAccountIsValid = accountID != -1; //boolean to check option input for account's type
-
-            if (userChoiceAccountIsValid)
+            //check if currency_id is the same, do nothing and return amount
+            if (senderCurrencyId == reciverCurrencyId)
             {
-                decimal balanceAccount = checkaccounts[accountID].balance;
-                Console.WriteLine($"Balance transfer from {checkaccounts[accountID].name}: {balanceAccount}");
-                decimal amount = GetTransferAmount();
-                decimal newBalanceAccount = balanceAccount - amount;
-
-                if (amount > balanceAccount)
+                return amount;
+            }
+            //check if sender currency_id is sek, convert to reciver currency
+            else if (senderCurrencyId == 1)
+            {
+                foreach (CurrencyConverter currency in currencyModel)
                 {
-                    Console.WriteLine("ERROR! Invalid amount");
-                }
-                else
-                {
-                    Console.WriteLine("\nWhich account do you wish to transfer money to?");
-
-                    int accountIdTarget = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
-                    bool userChoiceTargetAccountIsValid = accountIdTarget != -1;
-                    decimal balanceTransferTarget = checkaccounts[accountIdTarget].balance;
-                    decimal newBalanceTargetAccount = balanceTransferTarget + amount;
-
-                    if (userChoiceTargetAccountIsValid)
+                    if (senderCurrencyId == currency.id)
                     {
-                        Console.WriteLine($"\nBalance transfer to {checkaccounts[accountIdTarget].name}: {balanceTransferTarget}");
-
-                        if (checkaccounts[accountID].currency_id != checkaccounts[accountIdTarget].currency_id)
-                        {
-                            CurrencyConverter currencyConverter = new CurrencyConverter();
-                            List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
-
-                            //to withdraw                          
-                            SQLconnection.UpdateAccountBalance(newBalanceAccount, checkaccounts[accountID].id, userID);
-
-                            double amountToDouble = Decimal.ToDouble(amount);
-
-                            //loop between currencies
-                            for (int i = 0; i < currencyDB.Count; i++)
-                            {
-                                Console.WriteLine($"{currencyDB[i].id} {currencyDB[i].name} || Rate: {currencyDB[i].exchange_rate}");
-
-                                //if currency to withdraw is SEK
-                                if (checkaccounts[accountID].currency_id == 1)
-                                {
-                                    double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(amountToDouble, currencyDB[i].exchange_rate);
-                                    decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
-                                    newBalanceTargetAccount = balanceTransferTarget + convertedAmount;
-
-                                    //to deposit
-                                    SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
-                                }
-
-                                //OLIVER TODO: change logic to accept another currency besides dollar
-                                if (checkaccounts[accountID].currency_id == 2) //if is dollar
-                                {
-                                    double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
-                                    decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
-                                    newBalanceTargetAccount = balanceTransferTarget + convertedAmount;
-
-                                    //to deposit
-                                    SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //to withdraw
-                            SQLconnection.UpdateAccountBalance(newBalanceAccount, checkaccounts[accountID].id, userID);
-
-                            //to deposit
-                            SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
-                        }
-
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("\nMoney transfered!".ToUpper());
-                        Console.ResetColor();
-
-                    }
-                    else
-                    {
-                        //wrong target
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Invalid Account Target".ToUpper());
-                        Console.ResetColor();
+                        return amount / currency.exchange_rate;
                     }
                 }
             }
+            //check if reciver currency_id is sek, convert sender currency to sek
+            else if (reciverCurrencyId == 1)
+            {
+                foreach (CurrencyConverter currency in currencyModel)
+                {
+                    if (senderCurrencyId == currency.id)
+                    {
+                        return amount * currency.exchange_rate;
+                    }
+                }
+            }
+            //if none of the accounts have sek first convert sender currency_id to sek then to reciver currency_id
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid Account".ToUpper());
-                Console.ResetColor();
+                foreach (CurrencyConverter currency in currencyModel)
+                {
+                    if (senderCurrencyId == currency.id)
+                    {
+                        amount = amount / currency.exchange_rate;
+                    }
+                }
+                foreach (CurrencyConverter currency in currencyModel)
+                {
+                    if (reciverCurrencyId == currency.id)
+                    {
+                        amount = amount * currency.exchange_rate;
+                    }
+                }
+                return amount;
+            }
+            return 0;
+        }
+
+        public static void Transfer(int userID)
+        {
+            bool runMenu = true;
+            string menuMsg = " Please select an account to transfer from";
+            string menuMsg1 = " Please select an account to transfer to";
+            int senderAccountId;
+            int reciverAccountId;
+
+            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+            List<string> menuItems = new();
+            foreach (var item in checkaccounts)
+            {
+                menuItems.Add(item.GetName());
+            }
+            menuItems.Add("Exit");
+            menuIndex = 0;
+            while (runMenu)
+            {
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
+
+                if (selectedMenuItems < menuItems.Count - 1)
+                {
+                    //Console.WriteLine($"account name: {checkaccounts[selectedMenuItems].name}");
+                    senderAccountId = checkaccounts[selectedMenuItems].id;
+                    //Console.WriteLine($"account id: {senderAccountId}");
+                    //Console.ReadKey();
+                    menuIndex = 0;
+
+                    while (runMenu)
+                    {
+                        selectedMenuItems = DrawMenu(menuItems, menuMsg1);
+
+                        if (selectedMenuItems < menuItems.Count - 1)
+                        {
+                            reciverAccountId = checkaccounts[selectedMenuItems].id;
+
+                            //Check that sender & reciver Account are not the same
+                            if (senderAccountId == reciverAccountId)
+                            {
+                                Console.WriteLine("You cant transfer and send to the same account");
+                                Console.WriteLine("Enter any key to continue");
+                                Console.ReadKey();
+
+                                runMenu = false;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Input transfer amount start");
+                                Console.ReadKey();
+                                runMenu = false;
+                            }
+
+                        }
+                        //Exit case
+                        else if (selectedMenuItems == menuItems.Count - 1)
+                        {
+                            menuIndex = 0;
+                            runMenu = false;
+                        }
+
+                    }
+
+                }
+                //Exit case
+                else if (selectedMenuItems == menuItems.Count - 1)
+                {
+                    menuIndex = 0;
+                    runMenu = false;
+                }
+
             }
 
         }
+
 
         public static decimal GetTransferAmount()
         {

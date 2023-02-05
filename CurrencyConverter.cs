@@ -3,7 +3,7 @@
     public class CurrencyConverter
     {
         public int id { get; set; }
-        public double exchange_rate { get; set; }
+        public decimal exchange_rate { get; set; }
         public string name { get; set; } = string.Empty;
         //public decimal CurrencyAmount { get; set; }
 
