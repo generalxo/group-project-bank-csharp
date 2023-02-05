@@ -45,7 +45,7 @@
                 Console.Write("\nPlease enter FirstName: ");
                 firstName = Console.ReadLine();
             }
-            return firstName;
+            return firstName.ToLower();
         }
 
         public static string GetInputLastName()
@@ -59,7 +59,7 @@
                 Console.Write("\nPlease enter LastName: ");
                 lastName = Console.ReadLine();
             }
-            return lastName;
+            return lastName.ToLower();
         }
 
         public static string GetInputPinCode()
@@ -106,8 +106,5 @@
             }
             return branchId;
         }
-
-
-
     }
 }

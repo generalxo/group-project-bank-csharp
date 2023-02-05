@@ -262,45 +262,40 @@
 
         public static void Transfer(int userID)
         {
+            decimal amount, amountTo;
+            int fromAccountID, toAccountID;
             List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
 
             Console.WriteLine("\nWhich account do you wish to transfer money from?");
-
-            int accountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
-            bool userChoiceAccountIsValid = accountID != -1; //boolean to check option input for account's type
+            fromAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
+            bool userChoiceAccountIsValid = fromAccountID != -1; //check input for account's type
 
             if (userChoiceAccountIsValid)
             {
-                decimal balanceAccount = checkaccounts[accountID].balance;
-                Console.WriteLine($"Balance transfer from {checkaccounts[accountID].name}: {balanceAccount}");
-                decimal amount = GetTransferAmount();
-                decimal newBalanceAccount = balanceAccount - amount;
+                amount = GetTransferAmount();
+                decimal balanceAccount = checkaccounts[fromAccountID].balance;
 
+                //check balance to withdraw amount "from" account
                 if (amount > balanceAccount)
                 {
-                    Console.WriteLine("ERROR! Invalid amount");
+                    Console.WriteLine("ERROR! Insuficient amount");
                 }
+                //if there is enough money, get data "to" deposit
                 else
                 {
                     Console.WriteLine("\nWhich account do you wish to transfer money to?");
-
-                    int accountIdTarget = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
-                    bool userChoiceTargetAccountIsValid = accountIdTarget != -1;
-                    decimal balanceTransferTarget = checkaccounts[accountIdTarget].balance;
-                    decimal newBalanceTargetAccount = balanceTransferTarget + amount;
+                    toAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
+                    bool userChoiceTargetAccountIsValid = toAccountID != -1; //check input for account's type
 
                     if (userChoiceTargetAccountIsValid)
                     {
-                        Console.WriteLine($"\nBalance transfer to {checkaccounts[accountIdTarget].name}: {balanceTransferTarget}");
+                        amountTo = amount;
 
-                        if (checkaccounts[accountID].currency_id != checkaccounts[accountIdTarget].currency_id)
+                        //check currencies
+                        if (checkaccounts[fromAccountID].currency_id != checkaccounts[toAccountID].currency_id)
                         {
                             CurrencyConverter currencyConverter = new CurrencyConverter();
                             List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
-
-                            //to withdraw                          
-                            SQLconnection.UpdateAccountBalance(newBalanceAccount, checkaccounts[accountID].id, userID);
-
                             double amountToDouble = Decimal.ToDouble(amount);
 
                             //loop between currencies
@@ -309,41 +304,30 @@
                                 Console.WriteLine($"{currencyDB[i].id} {currencyDB[i].name} || Rate: {currencyDB[i].exchange_rate}");
 
                                 //if currency to withdraw is SEK
-                                if (checkaccounts[accountID].currency_id == 1)
+                                if (checkaccounts[fromAccountID].currency_id == 1)
                                 {
                                     double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(amountToDouble, currencyDB[i].exchange_rate);
-                                    decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
-                                    newBalanceTargetAccount = balanceTransferTarget + convertedAmount;
-
-                                    //to deposit
-                                    SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
+                                    amountTo = Convert.ToDecimal(convertedAmountAsDouble);
                                 }
 
                                 //OLIVER TODO: change logic to accept another currency besides dollar
-                                if (checkaccounts[accountID].currency_id == 2) //if is dollar
+                                if (checkaccounts[fromAccountID].currency_id == 2) //if to withdraw is dollar
                                 {
                                     double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
-                                    decimal convertedAmount = Convert.ToDecimal(convertedAmountAsDouble);
-                                    newBalanceTargetAccount = balanceTransferTarget + convertedAmount;
-
-                                    //to deposit
-                                    SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
+                                    amountTo = Convert.ToDecimal(convertedAmountAsDouble);
                                 }
                             }
+                            //execute transaction between different currencies
+                            SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
                         }
                         else
                         {
-                            //to withdraw
-                            SQLconnection.UpdateAccountBalance(newBalanceAccount, checkaccounts[accountID].id, userID);
-
-                            //to deposit
-                            SQLconnection.UpdateAccountBalance(newBalanceTargetAccount, checkaccounts[accountIdTarget].id, userID);
+                            //execute transaction between same currencies
+                            SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
                         }
-
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("\nMoney transfered!".ToUpper());
                         Console.ResetColor();
-
                     }
                     else
                     {
@@ -360,7 +344,6 @@
                 Console.WriteLine("Invalid Account".ToUpper());
                 Console.ResetColor();
             }
-
         }
 
         public static decimal GetTransferAmount()
@@ -371,7 +354,6 @@
             decimal amount;
             decimal.TryParse(transfer, out amount);
             return amount;
-
         }
 
         public static int DisplayAndSelectAccount(List<BankAccountModel> checkaccounts)
@@ -379,9 +361,7 @@
             //To Display and select available accounts
             for (int i = 0; i < checkaccounts.Count; i++)
             {
-                //Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"\n{i + 1}: {checkaccounts[i].name}");
-                //Console.ResetColor();
             }
 
             Console.Write("\nType ===> ");
@@ -514,7 +494,6 @@
 
         public static void CreateNewUser()
         {
-
             UserModel newUser = new UserModel
             {
                 first_name = UserModel.GetInputFirstName(),

@@ -68,6 +68,35 @@ namespace group_project_bank_csharp
             }
         }
 
+        public static bool TransferMoney(int user_id, int from_account_id, int to_account_id, decimal amountFrom, decimal amountTo)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                cnn.Open();
+
+                using (var transaction = cnn.BeginTransaction())
+                {
+                    try
+                    {
+                        cnn.Execute($@"
+                UPDATE bank_account 
+                SET balance = balance - '{amountFrom.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}'
+                    WHERE id = '{from_account_id}' AND user_id = '{user_id}';
+                UPDATE bank_account 
+                SET balance = balance + '{amountTo.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}'
+                WHERE id = '{to_account_id}' AND user_id = '{user_id}'", new DynamicParameters());
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Npgsql.PostgresException e)
+                    {
+                        Console.WriteLine(e.MessageText);
+                        return false;
+                    }
+                }
+            }
+        }
+
         public static void SaveBankUser(UserModel user)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
