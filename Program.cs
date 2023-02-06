@@ -1,4 +1,6 @@
-﻿namespace group_project_bank_csharp
+﻿using System.Collections.Generic;
+
+namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -260,6 +262,59 @@
             Console.Clear();
         }
 
+        public static decimal CurrencyExchange(decimal amountFrom, int fromAccountID, int toAccountID, List<BankAccountModel> checkaccounts)
+        {
+            CurrencyConverter currencyConverter = new CurrencyConverter();
+            List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
+            double convertedAmountAsDouble;
+            double amountToDouble = Decimal.ToDouble(amountFrom);
+            decimal amountTo = 0;
+
+            //loop between currencies
+            for (int i = 0; i < currencyDB.Count; i++)
+            {
+                //Console.WriteLine($"{currencyDB[i].id} {currencyDB[i].name} || Rate: {currencyDB[i].exchange_rate}");
+
+                //if currency to withdraw is SEK
+                if (checkaccounts[fromAccountID].currency_id == 1)
+                {
+                    convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(amountToDouble, currencyDB[i].exchange_rate);
+                    amountTo = Convert.ToDecimal(convertedAmountAsDouble);
+                }
+
+                else //if to withdraw is dollar
+                {
+                    if (checkaccounts[fromAccountID].currency_id == 2)
+                    {
+                        convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
+                        amountTo = Convert.ToDecimal(convertedAmountAsDouble);
+                    }
+
+                    else
+                    {
+                        double convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
+
+                        foreach (CurrencyConverter currency in currencyDB)
+                        {
+                            if (checkaccounts[fromAccountID].currency_id == currency.id)
+                            {
+                                amountTo = Convert.ToDecimal(convertedAmountToSek);
+                            }
+                        }
+                        foreach (CurrencyConverter currency in currencyDB)
+                        {
+                            if (checkaccounts[toAccountID].currency_id == currency.id)
+                            {
+                                convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(convertedAmountToSek, currencyDB[i].exchange_rate);
+                                amountTo = Convert.ToDecimal(convertedAmountAsDouble);
+                            }
+                        }
+                    }
+                }
+            }
+            return amountTo;
+        }
+
         public static void Transfer(int userID)
         {
             decimal amount, amountTo;
@@ -289,49 +344,27 @@
 
                     if (userChoiceTargetAccountIsValid)
                     {
-                        amountTo = amount;
-
                         //check currencies
                         if (checkaccounts[fromAccountID].currency_id != checkaccounts[toAccountID].currency_id)
                         {
-                            CurrencyConverter currencyConverter = new CurrencyConverter();
-                            List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
-                            double amountToDouble = Decimal.ToDouble(amount);
-
-                            //loop between currencies
-                            for (int i = 0; i < currencyDB.Count; i++)
-                            {
-                                Console.WriteLine($"{currencyDB[i].id} {currencyDB[i].name} || Rate: {currencyDB[i].exchange_rate}");
-
-                                //if currency to withdraw is SEK
-                                if (checkaccounts[fromAccountID].currency_id == 1)
-                                {
-                                    double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(amountToDouble, currencyDB[i].exchange_rate);
-                                    amountTo = Convert.ToDecimal(convertedAmountAsDouble);
-                                }
-
-                                //OLIVER TODO: change logic to accept another currency besides dollar
-                                if (checkaccounts[fromAccountID].currency_id == 2) //if to withdraw is dollar
-                                {
-                                    double convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
-                                    amountTo = Convert.ToDecimal(convertedAmountAsDouble);
-                                }
-                            }
-                            //execute transaction between different currencies
-                            SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
+                            //transactio between different currencies
+                            amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
                         }
                         else
                         {
-                            //execute transaction between same currencies
-                            SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
+                            //transactio between same currency
+                            amountTo = amount;
                         }
+
+                        //execute transaction
+                        SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("\nMoney transfered!".ToUpper());
                         Console.ResetColor();
                     }
                     else
                     {
-                        //wrong target
+                        //wrong target account choice
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Invalid Account Target".ToUpper());
                         Console.ResetColor();
@@ -340,6 +373,7 @@
             }
             else
             {
+                //wrong account choice
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Invalid Account".ToUpper());
                 Console.ResetColor();
