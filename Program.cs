@@ -282,15 +282,15 @@ namespace group_project_bank_csharp
                     amountTo = Convert.ToDecimal(convertedAmountAsDouble);
                 }
 
-                else //if to withdraw is dollar
+                else
                 {
-                    if (checkaccounts[fromAccountID].currency_id == 2)
+                    if (checkaccounts[fromAccountID].currency_id == 2) //if to withdraw is dollar
                     {
                         convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
                         amountTo = Convert.ToDecimal(convertedAmountAsDouble);
                     }
 
-                    else
+                    else //if to withdraw is another currency other than dollar and sek
                     {
                         double convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
 
