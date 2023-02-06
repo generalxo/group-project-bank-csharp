@@ -262,7 +262,7 @@ namespace group_project_bank_csharp
             Console.Clear();
         }
 
-        public static decimal CurrencyExchange(decimal amountFrom, int fromAccountID, int toAccountID, List<BankAccountModel> checkaccounts)
+        public static decimal CurrencyExchange(decimal amountFrom, int fromAccountID, List<BankAccountModel> checkaccounts)
         {
             CurrencyConverter currencyConverter = new CurrencyConverter();
             List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
@@ -334,7 +334,7 @@ namespace group_project_bank_csharp
                         if (checkaccounts[fromAccountID].currency_id != checkaccounts[toAccountID].currency_id)
                         {
                             //transactio between different currencies
-                            amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
+                            amountTo = CurrencyExchange(amount, fromAccountID, checkaccounts);
                         }
                         else
                         {
