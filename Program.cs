@@ -266,7 +266,7 @@ namespace group_project_bank_csharp
         {
             CurrencyConverter currencyConverter = new CurrencyConverter();
             List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
-            double convertedAmountAsDouble;
+            double convertedAmountAsDouble, convertedAmountToSek;
             double amountToDouble = Decimal.ToDouble(amountFrom);
             decimal amountTo = 0;
 
@@ -286,29 +286,15 @@ namespace group_project_bank_csharp
                 {
                     if (checkaccounts[fromAccountID].currency_id == 2) //if to withdraw is dollar
                     {
-                        convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
-                        amountTo = Convert.ToDecimal(convertedAmountAsDouble);
+                        convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
+                        amountTo = Convert.ToDecimal(convertedAmountToSek);
                     }
 
                     else //if to withdraw is another currency other than dollar and sek
                     {
-                        double convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
-
-                        foreach (CurrencyConverter currency in currencyDB)
-                        {
-                            if (checkaccounts[fromAccountID].currency_id == currency.id)
-                            {
-                                amountTo = Convert.ToDecimal(convertedAmountToSek);
-                            }
-                        }
-                        foreach (CurrencyConverter currency in currencyDB)
-                        {
-                            if (checkaccounts[toAccountID].currency_id == currency.id)
-                            {
-                                convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(convertedAmountToSek, currencyDB[i].exchange_rate);
-                                amountTo = Convert.ToDecimal(convertedAmountAsDouble);
-                            }
-                        }
+                        convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
+                        convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(convertedAmountToSek, currencyDB[i].exchange_rate);
+                        amountTo = Convert.ToDecimal(convertedAmountAsDouble);
                     }
                 }
             }
