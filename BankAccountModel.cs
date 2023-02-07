@@ -18,5 +18,11 @@
         {
             Console.WriteLine($" ID: {id}\n Account name: {name}\n Interest rate: {interest_rate}\n Balance: {balance}\n User ID: {user_id}\n Currency ID: {currency_id}");
         }
+
+        public string GetName()
+        {
+            return name;
+        }
+
     }
 }

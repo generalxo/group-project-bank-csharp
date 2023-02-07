@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace group_project_bank_csharp
+﻿namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -50,21 +48,21 @@ namespace group_project_bank_csharp
 
             while (true)
             {
-                string selectedMenuItem = DrawMenu(menuItems, menuMsg);
+                int selectedMenuItem = DrawMenu(menuItems, menuMsg);
                 //Switch for the selectedMenuItem string that DrawMenu returns
                 switch (selectedMenuItem)
                 {
-                    case "Log in":
+                    case 0:
                         Login();
 
                         //Console.WriteLine(" Login would start here");
                         //Console.WriteLine(" Enter any key to continue");
                         //Console.ReadKey();
                         break;
-                    case "Help":
+                    case 1:
                         Help();
                         break;
-                    case "Exit":
+                    case 2:
                         Environment.Exit(0);
                         break;
                 }
@@ -110,12 +108,13 @@ namespace group_project_bank_csharp
                 menuItems.Add("Logout");
             }
 
+
             while (runMenu)
             {
-                string selectedMenuItems = DrawMenu(menuItems, menuMsg);
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
                 switch (selectedMenuItems)
                 {
-                    case "Balance":
+                    case 0:
                         Console.Clear();
                         Console.WriteLine("");
                         Console.WriteLine(" Your Balance");
@@ -144,43 +143,34 @@ namespace group_project_bank_csharp
                         Console.ReadKey();
 
                         break;
-                    case "Transfer":
+                    case 1:
                         Transfer(currentUser[0].id);
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
+
+                        //Console.WriteLine(" Press any key to continue");
+                        //Console.ReadKey();
                         break;
-                    case "Withdraw":
+                    case 2:
                         Withdraw(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "Loan":
+                    case 3:
                         Console.WriteLine(" Loan would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "Account":
-
+                    case 4:
                         OpenAccount(currentUser[0].id);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "Create New User":
+                    case 5:
                         CreateNewUser();
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-                    case "AdminOption1":
-                        Console.WriteLine(" AdminOption1 would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "AdminOption2":
-                        Console.WriteLine(" AdminOption2 would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "Logout":
+
+                    case 6:
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -188,8 +178,11 @@ namespace group_project_bank_csharp
             }
         }
 
-        public static string DrawMenu(List<string> menuItem, string menuMsg)
+        public static int DrawMenu(List<string> menuItem, string menuMsg)
         {
+
+            //int menuIndex = 0;
+
             //Method takes in a List of strings and displays them. The static int menuIndex indicates which item the user is selecting
             //Method allows user to navigare the List of strings and select a string and return it
 
@@ -236,19 +229,19 @@ namespace group_project_bank_csharp
             //Right arrow key check
             else if (ckey.Key == ConsoleKey.RightArrow)
             {
-                return menuItem[menuIndex];
+                return menuIndex;
             }
             //Enter key check
             else if (ckey.Key == ConsoleKey.Enter)
             {
-                return menuItem[menuIndex];
+                return menuIndex;
             }
             else
             {
-                return "";
+                return 100;
             }
 
-            return "";
+            return 100;
         }
 
         public static void Help()
@@ -261,6 +254,7 @@ namespace group_project_bank_csharp
             Console.ReadKey();
             Console.Clear();
         }
+
 
         public static decimal CurrencyExchange(decimal amountFrom, int fromAccountID, int toAccountID, List<BankAccountModel> checkaccounts)
         {
@@ -357,13 +351,7 @@ namespace group_project_bank_csharp
                     }
                 }
             }
-            else
-            {
-                //wrong account choice
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid Account".ToUpper());
-                Console.ResetColor();
-            }
+
         }
 
         public static decimal GetTransferAmount()
