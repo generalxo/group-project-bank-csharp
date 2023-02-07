@@ -135,10 +135,45 @@
                         Console.ReadKey();
                         break;
                     case "Account":
+                        bool repeat = true;
+                        do
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\n ========== Account ==========");
+                            Console.WriteLine("\n Please select an option:");
+                            Console.WriteLine("\n 1. Create account");
+                            Console.WriteLine(" 2. Return of interest");
+                            Console.WriteLine(" 3. Exit");
+                            Console.Write("\n ===>");
+                            string userOption = Console.ReadLine();
 
-                        OpenAccount(currentUser[0].id);
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
+                            if (userOption == "1")
+                            {
+                                Console.Clear();
+                                OpenAccount(currentUser[0].id);
+                                Console.WriteLine(" Press any key to continue");
+                                Console.ReadKey();
+                            }
+                            else if (userOption == "2")
+                            {
+                                Console.Clear();
+                                ReturnOnInterest(currentUser[0].id, 1000);
+                                Console.WriteLine(" Press any key to continue");
+                                Console.ReadKey();
+                            }
+                            else if (userOption == "3")
+                            {
+                                repeat = false;
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine(" ERROR: Please input a number shown on the menu.");
+                                Console.WriteLine(" Press any key to continue");
+                                Console.ReadKey();
+                            }
+                        } while (repeat);
+
                         break;
                     case "Logout":
                         menuIndex = 0;
@@ -221,6 +256,7 @@
             Console.ReadKey();
             Console.Clear();
         }
+        #endregion
 
         public static void Transfer(int userID)
         {
@@ -360,52 +396,53 @@
                 return accountID -= 1;
             }
         }
+
         public static void Withdraw(int userID)
         {
             decimal amount;
             List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
 
             Console.Clear();
-            Console.WriteLine("Which account do you wish to withdraw money from?\n");
+            Console.WriteLine("\n Which account do you wish to withdraw money from?\n");
 
             for (int i = 0; i < checkAccounts.Count; i++)
             {
-                Console.WriteLine($"{i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
+                Console.WriteLine($" {i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
             }
 
-            Console.Write("\nType ===> ");
+            Console.Write("\n ===> ");
             string? accountChoice = Console.ReadLine();
 
             int.TryParse(accountChoice, out int accountID);
             accountID -= 1;
 
-            Console.WriteLine("\nAmount to withdraw from your account?\n");
-            Console.Write("Type ===> ");
+            Console.WriteLine("\n Amount to withdraw from your account?\n");
+            Console.Write(" ===> ");
             string? transfer = Console.ReadLine();
             decimal.TryParse(transfer, out amount);
 
             if (amount <= 0)
             {
-                Console.WriteLine("Amount to witdraw cannot be a negative value."); //message for negative amount
+                Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
             }
             else if (checkAccounts[accountID].balance < amount)
             {
-                Console.WriteLine("\n\tERROR! Not allowed. You don't have enough money");
+                Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
             }
             else
             {
                 amount = checkAccounts[accountID].balance -= amount;
-                Console.WriteLine($"\nAccount: {checkAccounts[accountID].name} New balance: {amount}");
+                Console.WriteLine($"\n Account: {checkAccounts[accountID].name} New balance: {amount}");
                 SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
             }
         }
 
         public static void OpenAccount(int userID)
         {
-            Console.WriteLine("\nWhat type of account do you want to open?");
-            Console.WriteLine("\nChecking");
-            Console.WriteLine("Salary");
-            Console.WriteLine("Savings");
+            Console.WriteLine("\n What type of account do you want to open?");
+            Console.WriteLine("\n Checking");
+            Console.WriteLine(" Salary");
+            Console.WriteLine(" Savings");
             Console.Write("===> ");
             string? accountType = Console.ReadLine();
 
@@ -458,7 +495,7 @@
                     BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
                     {
                         name = accountType,
-                        interest_rate = 0,
+                        interest_rate = 0.75M,
                         user_id = userID,
                         currency_id = 1,
                         balance = 0
@@ -471,6 +508,39 @@
             else
             {
                 Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
+            }
+        }
+
+        public static void ReturnOnInterest(int userID, decimal input)
+        {
+            List<BankAccountModel> Accounts = SQLconnection.LoadBankAccounts(userID);
+            List<CurrencyConverter> AccountCurrency = SQLconnection.LoadBankCurrency();
+
+            foreach (BankAccountModel Account in Accounts)
+            {
+                decimal interestRate = Account.interest_rate;
+
+                if (Account.name == "Savings" && Account.interest_rate > 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\n The information below shows the return of the interest rate for your deposit to your savings account.");
+                    Console.WriteLine("\n Return from deposit:"); 
+                    Console.WriteLine($" 1 month:  {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 1) * 100) / 100} {AccountCurrency[userID-1].name}");
+                    Console.WriteLine($" 3 months: {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 3) * 100) / 100} {AccountCurrency[userID-1].name}");
+                    Console.WriteLine($" 6 months: {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 6) * 100) / 100} {AccountCurrency[userID-1].name}");
+                    Console.WriteLine($" 1 year:   {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate), 1) * 100) / 100} {AccountCurrency[userID-1].name}");
+                    Console.WriteLine($" 5 years:  {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate), 5) * 100) / 100} {AccountCurrency[userID-1].name}\n");
+                    continue;
+                }
+                else if (Account.interest_rate <= 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("\n Your savings account does not return any interest.");
+                }
+                else
+                {
+                    Console.WriteLine("\n The account is not a savings account.");
+                }
             }
         }
 
@@ -509,6 +579,5 @@
                 }
             }
         }
-        #endregion
     }
 }
