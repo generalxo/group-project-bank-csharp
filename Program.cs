@@ -122,6 +122,7 @@
                         break;
                     case 1:
                         Transfer(currentUser[0].id);
+                        //Exchange();
                         //Console.WriteLine(" Press any key to continue");
                         //Console.ReadKey();
                         break;
@@ -328,23 +329,33 @@
 
         //}
 
-        public decimal Exchange(decimal amount, int senderCurrencyId, int reciverCurrencyId)
+        public static void Exchange()
         {
+
+            decimal amount = 500;
+            int senderCurrencyId = 2;
+            int reciverCurrencyId = 1;
+
             List<CurrencyConverter> currencyModel = SQLconnection.LoadBankCurrency();
 
             //check if currency_id is the same, do nothing and return amount
             if (senderCurrencyId == reciverCurrencyId)
             {
-                return amount;
+                //return amount;
+                Console.WriteLine(amount);
+                Console.WriteLine($"sender & reciver CurrencyId: {senderCurrencyId}");
             }
             //check if sender currency_id is sek, convert to reciver currency
             else if (senderCurrencyId == 1)
             {
                 foreach (CurrencyConverter currency in currencyModel)
                 {
-                    if (senderCurrencyId == currency.id)
+                    if (reciverCurrencyId == currency.id)
                     {
-                        return amount / currency.exchange_rate;
+                        //return amount / currency.exchange_rate;
+                        Console.WriteLine($"{amount / currency.exchange_rate}");
+                        Console.WriteLine($"senderCurrencyId: {senderCurrencyId}");
+                        Console.WriteLine($"senderCurrencyId: {reciverCurrencyId}");
                     }
                 }
             }
@@ -355,7 +366,10 @@
                 {
                     if (senderCurrencyId == currency.id)
                     {
-                        return amount * currency.exchange_rate;
+                        //return amount * currency.exchange_rate;
+                        Console.WriteLine($"{amount * currency.exchange_rate}");
+                        Console.WriteLine($"senderCurrencyId: {senderCurrencyId}");
+                        Console.WriteLine($"senderCurrencyId: {reciverCurrencyId}");
                     }
                 }
             }
@@ -376,9 +390,13 @@
                         amount = amount * currency.exchange_rate;
                     }
                 }
-                return amount;
+                //return amount;
+                Console.WriteLine(amount);
+                Console.WriteLine($"senderCurrencyId: {senderCurrencyId}");
+                Console.WriteLine($"senderCurrencyId: {reciverCurrencyId}");
             }
-            return 0;
+            //return 0;
+            Console.ReadKey();
         }
 
         public static void Transfer(int userID)
