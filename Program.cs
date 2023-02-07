@@ -332,6 +332,7 @@
         public decimal Exchange(decimal amount, int senderCurrencyId, int reciverCurrencyId)
         {
             List<CurrencyConverter> currencyModel = SQLconnection.LoadBankCurrency();
+            decimal exchangeValue;
 
             //check if currency_id is the same, do nothing and return amount
             if (senderCurrencyId == reciverCurrencyId)
@@ -345,7 +346,8 @@
                 {
                     if (reciverCurrencyId == currency.id)
                     {
-                        return amount / currency.exchange_rate;
+                        exchangeValue = Convert.ToDecimal(currency.exchange_rate);
+                        return amount / exchangeValue;
                     }
                 }
             }
@@ -356,7 +358,8 @@
                 {
                     if (senderCurrencyId == currency.id)
                     {
-                        return amount * currency.exchange_rate;
+                        exchangeValue = Convert.ToDecimal(currency.exchange_rate);
+                        return amount * exchangeValue;
                     }
                 }
             }
@@ -367,14 +370,16 @@
                 {
                     if (senderCurrencyId == currency.id)
                     {
-                        amount = amount / currency.exchange_rate;
+                        exchangeValue = Convert.ToDecimal(currency.exchange_rate);
+                        amount = amount / exchangeValue;
                     }
                 }
                 foreach (CurrencyConverter currency in currencyModel)
                 {
                     if (reciverCurrencyId == currency.id)
                     {
-                        amount = amount * currency.exchange_rate;
+                        exchangeValue = Convert.ToDecimal(currency.exchange_rate);
+                        amount = amount * exchangeValue;
                     }
                 }
                 return amount;
