@@ -122,7 +122,7 @@
                         break;
                     case 1:
                         Transfer(currentUser[0].id);
-                        //Exchange();
+
                         //Console.WriteLine(" Press any key to continue");
                         //Console.ReadKey();
                         break;
@@ -331,18 +331,12 @@
 
         public decimal Exchange(decimal amount, int senderCurrencyId, int reciverCurrencyId)
         {
-
-            //decimal amount = 500;
-            //int senderCurrencyId = 2;
-            //int reciverCurrencyId = 1;
-
             List<CurrencyConverter> currencyModel = SQLconnection.LoadBankCurrency();
 
             //check if currency_id is the same, do nothing and return amount
             if (senderCurrencyId == reciverCurrencyId)
             {
                 return amount;
-
             }
             //check if sender currency_id is sek, convert to reciver currency
             else if (senderCurrencyId == 1)
@@ -352,7 +346,6 @@
                     if (reciverCurrencyId == currency.id)
                     {
                         return amount / currency.exchange_rate;
-
                     }
                 }
             }
@@ -364,7 +357,6 @@
                     if (senderCurrencyId == currency.id)
                     {
                         return amount * currency.exchange_rate;
-
                     }
                 }
             }
@@ -386,10 +378,8 @@
                     }
                 }
                 return amount;
-
             }
             return 0;
-
         }
 
         public static void Transfer(int userID)
