@@ -262,7 +262,7 @@ namespace group_project_bank_csharp
             Console.Clear();
         }
 
-        public static decimal CurrencyExchange(decimal amountFrom, int fromAccountID, List<BankAccountModel> checkaccounts)
+        public static decimal CurrencyExchange(decimal amountFrom, int fromAccountID, int toAccountID, List<BankAccountModel> checkaccounts)
         {
             CurrencyConverter currencyConverter = new CurrencyConverter();
             List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
@@ -284,13 +284,13 @@ namespace group_project_bank_csharp
 
                 else
                 {
-                    if (checkaccounts[fromAccountID].currency_id == 2) //if to withdraw is dollar
+                    if (checkaccounts[fromAccountID].currency_id == 2 && checkaccounts[toAccountID].currency_id == 1) //if is dollar to sek
                     {
                         convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
                         amountTo = Convert.ToDecimal(convertedAmountToSek);
                     }
 
-                    else //if to withdraw is another currency other than dollar and sek
+                    else //if to withdraw is another currency other than sek and dollar
                     {
                         convertedAmountToSek = currencyConverter.CurrencyConverterCalculatorSomeCurrencyToSEK(amountToDouble, currencyDB[i].exchange_rate);
                         convertedAmountAsDouble = currencyConverter.CurrencyConverterCalculatorSEKToSomeCurrency(convertedAmountToSek, currencyDB[i].exchange_rate);
@@ -333,12 +333,12 @@ namespace group_project_bank_csharp
                         //check currencies
                         if (checkaccounts[fromAccountID].currency_id != checkaccounts[toAccountID].currency_id)
                         {
-                            //transactio between different currencies
-                            amountTo = CurrencyExchange(amount, fromAccountID, checkaccounts);
+                            //transaction between different currencies
+                            amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
                         }
                         else
                         {
-                            //transactio between same currency
+                            //transaction between same currency
                             amountTo = amount;
                         }
 
