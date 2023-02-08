@@ -69,6 +69,7 @@
             }
 
         }
+
         static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
@@ -153,45 +154,46 @@
                         break;
 
                     case 4:
-                        bool repeat = true;
-                        do
-                        {
-                            Console.Clear();
-                            Console.WriteLine("\n ========== Account ==========");
-                            Console.WriteLine("\n Please select an option:");
-                            Console.WriteLine("\n 1. Create account");
-                            Console.WriteLine(" 2. Return of interest");
-                            Console.WriteLine(" 3. Exit");
-                            Console.Write("\n ===>");
-                            string? userOption = Console.ReadLine();
-
-                            if (userOption == "1")
-                            {
-                                Console.Clear();
-                                OpenAccount(currentUser[0].id);
-                                Console.WriteLine(" Press any key to continue");
-                                Console.ReadKey();
-                            }
-                            else if (userOption == "2")
-                            {
-                                Console.Clear();
-                                ReturnOnInterest(currentUser[0].id, 1000);
-                                Console.WriteLine(" Press any key to continue");
-                                Console.ReadKey();
-                            }
-                            else if (userOption == "3")
-                            {
-                                repeat = false;
-                                break;
-                            }
-                            else
-                            {
-                                Console.WriteLine(" ERROR: Please input a number shown on the menu.");
-                                Console.WriteLine(" Press any key to continue");
-                                Console.ReadKey();
-                            }
-                        } while (repeat);
+                        OpenAccount(currentUser[0].id);
                         break;
+                    //bool repeat = true;
+                    //do
+                    //{
+                    //    Console.Clear();
+                    //    Console.WriteLine("\n ========== Account ==========");
+                    //    Console.WriteLine("\n Please select an option:");
+                    //    Console.WriteLine("\n 1. Create account");
+                    //    Console.WriteLine(" 2. Return of interest");
+                    //    Console.WriteLine(" 3. Exit");
+                    //    Console.Write("\n ===>");
+                    //    string? userOption = Console.ReadLine();
+
+                    //    if (userOption == "1")
+                    //    {
+                    //        Console.Clear();
+                    //        OpenAccount(currentUser[0].id);
+                    //        Console.WriteLine(" Press any key to continue");
+                    //        Console.ReadKey();
+                    //    }
+                    //    else if (userOption == "2")
+                    //    {
+                    //        Console.Clear();
+                    //        ReturnOnInterest(currentUser[0].id, 1000);
+                    //        Console.WriteLine(" Press any key to continue");
+                    //        Console.ReadKey();
+                    //    }
+                    //    else if (userOption == "3")
+                    //    {
+                    //        repeat = false;
+                    //        break;
+                    //    }
+                    //    else
+                    //    {
+                    //        Console.WriteLine(" ERROR: Please input a number shown on the menu.");
+                    //        Console.WriteLine(" Press any key to continue");
+                    //        Console.ReadKey();
+                    //    }
+                    //} while (repeat);
 
                     case 5:
                         CreateNewUser();
@@ -517,76 +519,207 @@
 
         public static void OpenAccount(int userID)
         {
-            Console.WriteLine("\n What type of account do you want to open?");
-            Console.WriteLine("\n Checking");
-            Console.WriteLine(" Salary");
-            Console.WriteLine(" Savings");
-            Console.Write("===> ");
-            string? accountType = Console.ReadLine();
-
+            menuIndex = 0;
+            bool runMenu = true;
+            bool runMenu2 = true;
+            bool hasAccountType = false;
+            string newAccountName = "";
+            string menuMsg = $" Please select an option ";
             List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
+            List<string> menuItems = new List<string>() {"Open Account", "Exit"};
 
-            if (!string.IsNullOrEmpty(accountType)) //Checks to see if the account type isn't null or empty before proceeding
+            while(runMenu)
             {
-                bool hasAccountType = false;
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
 
-                if (accountType == "Checking")
+                if (selectedMenuItems == 0)
                 {
-                    foreach (BankAccountModel bankAccountModel in checkAccounts)
+                    menuIndex = 0;
+                    List<string> menuItems2 = new List<string>() {"Checking", "Salary", "Savings", "Exit"};
+                    Console.WriteLine($"{menuItems[selectedMenuItems]}");
+
+                    runMenu2 = true;
+                    newAccountName = "";
+                    hasAccountType = false;
+
+                    while (runMenu2)
                     {
-                        if (bankAccountModel.name == "Checking")
+                        int selectedMenuItems2 = DrawMenu(menuItems2, menuMsg);
+
+                        if (selectedMenuItems2 == 0)
                         {
-                            hasAccountType = true;
-                            break;
+                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
+                            foreach (BankAccountModel bankAccountModel in checkAccounts)
+                            {
+                                if (bankAccountModel.name == "Checking")
+                                {
+                                    // Check if checking account exist
+                                    hasAccountType = true;
+                                    menuIndex = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    newAccountName = "Checking";
+                                }
+                            }
+                        }
+                        else if (selectedMenuItems2 == 1)
+                        {
+                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
+                            foreach (BankAccountModel bankAccountModel in checkAccounts)
+                            {
+                                if (bankAccountModel.name == "Salary")
+                                {
+                                    // Check if salary account exist
+                                    hasAccountType = true;
+                                    menuIndex = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    newAccountName = "Salary";
+                                }
+                            }
+                        }
+                        else if (selectedMenuItems2 == 2)
+                        {
+                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
+                            foreach (BankAccountModel bankAccountModel in checkAccounts)
+                            {
+                                if (bankAccountModel.name == "Savings")
+                                {
+                                    // Check if savings account exist
+                                    hasAccountType = true;
+                                    menuIndex = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    newAccountName = "Savings";
+                                }
+                            }
+                        }
+                        else if (selectedMenuItems2 == 3)
+                        {
+                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
+                            // This exits the menu
+                            menuIndex = 0;
+                            runMenu2 = false;
+                        }
+                        else { }
+
+                        if (hasAccountType)
+                        {
+                            Console.WriteLine("\n ERROR: You have already opened an account of this type"); //The account already exists in the database
+                            Console.WriteLine("\n Press Enter to continue.");
+                            Console.ReadKey();
+                            runMenu2 = false;
+                        }
+                        else
+                        {
+                            if (newAccountName == "" || newAccountName == null)
+                            {
+
+                            }
+                            else
+                            {
+                                BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
+                                {
+                                    name = newAccountName,
+                                    interest_rate = 0.75M,
+                                    user_id = userID,
+                                    currency_id = 1,
+                                    balance = 0
+
+                                };
+                                SQLconnection.OpenAccount(bankAccountModel);
+                                Console.WriteLine("\n Account successfully opened");
+                                Console.WriteLine("\n Press Enter to continue.");
+                                Console.ReadKey();
+                                runMenu2 = false;
+                            }
                         }
                     }
                 }
-                else if (accountType == "Salary")
+                else if (selectedMenuItems == 1)
                 {
-                    foreach (BankAccountModel bankAccountModel in checkAccounts)
-                    {
-                        if (bankAccountModel.name == "Salary")
-                        {
-                            hasAccountType = true;
-                            break;
-                        }
-                    }
+                    // This exits this menu
+                    runMenu = false;
                 }
-                else if (accountType == "Savings")
-                {
-                    foreach (BankAccountModel bankAccountModel in checkAccounts)
-                    {
-                        if (bankAccountModel.name == "Savings")
-                        {
-                            hasAccountType = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (hasAccountType)
-                {
-                    Console.WriteLine("\nERROR: You have already opened an account of this type"); //The account already exists in the database
-                }
-                else
-                {
-                    BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
-                    {
-                        name = accountType,
-                        interest_rate = 0.75M,
-                        user_id = userID,
-                        currency_id = 1,
-                        balance = 0
-
-                    };
-                    SQLconnection.OpenAccount(bankAccountModel);
-                    Console.WriteLine("\nAccount successfully opened");
-                }
+                else { }
             }
-            else
-            {
-                Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
-            }
+            menuIndex = 0;
+            //Console.WriteLine("\n What type of account do you want to open?");
+            //Console.WriteLine("\n Checking");
+            //Console.WriteLine(" Salary");
+            //Console.WriteLine(" Savings");
+            //Console.Write("===> ");
+            //string? accountType = Console.ReadLine();
+
+            //List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
+
+            //if (!string.IsNullOrEmpty(accountType)) //Checks to see if the account type isn't null or empty before proceeding
+            //{
+            //    bool hasAccountType = false;
+
+            //    if (accountType == "Checking")
+            //    {
+            //        foreach (BankAccountModel bankAccountModel in checkAccounts)
+            //        {
+            //            if (bankAccountModel.name == "Checking")
+            //            {
+            //                hasAccountType = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //    else if (accountType == "Salary")
+            //    {
+            //        foreach (BankAccountModel bankAccountModel in checkAccounts)
+            //        {
+            //            if (bankAccountModel.name == "Salary")
+            //            {
+            //                hasAccountType = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //    else if (accountType == "Savings")
+            //    {
+            //        foreach (BankAccountModel bankAccountModel in checkAccounts)
+            //        {
+            //            if (bankAccountModel.name == "Savings")
+            //            {
+            //                hasAccountType = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+
+            //    if (hasAccountType)
+            //    {
+            //        Console.WriteLine("\nERROR: You have already opened an account of this type"); //The account already exists in the database
+            //    }
+            //    else
+            //    {
+            //        BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
+            //        {
+            //            name = accountType,
+            //            interest_rate = 0.75M,
+            //            user_id = userID,
+            //            currency_id = 1,
+            //            balance = 0
+
+            //        };
+            //        SQLconnection.OpenAccount(bankAccountModel);
+            //        Console.WriteLine("\nAccount successfully opened");
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
+            //}
         }
 
         public static void ReturnOnInterest(int userID, decimal input)
