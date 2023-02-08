@@ -53,8 +53,8 @@
                 switch (selectedMenuItem)
                 {
                     case 0:
+                        Console.Clear();
                         Login();
-
                         //Console.WriteLine(" Login would start here");
                         //Console.WriteLine(" Enter any key to continue");
                         //Console.ReadKey();
@@ -644,34 +644,64 @@
         {
             string? firstName, lastName, pinCode;
 
-            Console.WriteLine("");
-            Console.Write($" Please enter your first name: ");
-            firstName = Console.ReadLine();
+            int loginAttempts = 3; //The number of attempts that the user starts out with
 
-            Console.Write($" Please enter your last name: ");
-            lastName = Console.ReadLine();
-
-            Console.Write($" Please enter your Pin code: ");
-            pinCode = Console.ReadLine();
-
-            if (firstName == null || lastName == null || pinCode == null)
+            for (int i = 0; i < loginAttempts; i--) //For each time that the user fails to login an attempt will be used up
             {
-                Console.WriteLine("User does not exist.\nPlease try again.");
-            }
-            else
-            {
-                List<UserModel> checkUsers = SQLconnection.CheckLogin(firstName, lastName, pinCode);
+                Console.WriteLine("\n Please enter your details");
+                Console.Write($"\n First name: ");
+                firstName = Console.ReadLine();
 
-                if (checkUsers.Count < 1)
+                Console.Write($" Last name: ");
+                lastName = Console.ReadLine();
+
+                Console.Write($" PIN code: ");
+                pinCode = Console.ReadLine();
+
+                if (firstName == null || lastName == null || pinCode == null)
                 {
-                    Console.WriteLine("Failed loggin attempt.");
-                    Console.WriteLine(checkUsers.Count);
-                    Console.ReadLine();
+                    Console.WriteLine("\n ERROR: User does not exist");
+                    loginAttempts--;
                 }
                 else
                 {
-                    checkUsers[0].Info();
-                    BankMenu(checkUsers);
+                    List<UserModel> checkUsers = SQLconnection.CheckLogin(firstName, lastName, pinCode);
+
+                    if (checkUsers.Count < 1)
+                    {
+                        Console.WriteLine("\n ERROR: Login failed");
+                        //Console.WriteLine(checkUsers.Count);
+                        //Console.ReadLine();
+                        loginAttempts--;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n Login successful");
+                        checkUsers[0].Info();
+                        BankMenu(checkUsers);
+                        break;
+                    }
+                }
+
+                if (loginAttempts == 2)
+                {
+                    Console.WriteLine(" You have two attempts left.");
+                    Console.WriteLine(" Press any key to continue");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else if (loginAttempts == 1)
+                {
+                    Console.WriteLine(" You have one attempt left.");
+                    Console.WriteLine(" Press any key to continue");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else
+                {
+                    Console.WriteLine(" You have used up all of your login attempts. The application will now shut down");
+                    Environment.Exit(0);
+                    break;
                 }
             }
         }
