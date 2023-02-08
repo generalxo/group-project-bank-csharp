@@ -145,8 +145,6 @@
                         break;
                     case 2:
                         Withdraw(currentUser[0].id);
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
                         break;
                     case 3:
                         Console.WriteLine(" Loan would start here");
@@ -420,42 +418,101 @@
 
         public static void Withdraw(int userID)
         {
+            string? input;
+            decimal balance;
+            int accountId;
+            menuIndex = 0;
+            bool runMenu = true;
             decimal amount;
+            string menuMsg = $"\n Please select an option ";
             List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
-
-            Console.Clear();
-            Console.WriteLine("\n Which account do you wish to withdraw money from?\n");
+            List<string> menuItems = new List<string>();
 
             for (int i = 0; i < checkAccounts.Count; i++)
             {
-                Console.WriteLine($" {i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
+                menuItems.Add(checkAccounts[i].name);
             }
+            menuItems.Add("Exit");
 
-            Console.Write("\n ===> ");
-            string? accountChoice = Console.ReadLine();
 
-            int.TryParse(accountChoice, out int accountID);
-            accountID -= 1;
-
-            Console.WriteLine("\n Amount to withdraw from your account?\n");
-            Console.Write(" ===> ");
-            string? transfer = Console.ReadLine();
-            decimal.TryParse(transfer, out amount);
-
-            if (amount <= 0)
+            while (runMenu)
             {
-                Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
+
+                //Exit case
+                if (selectedMenuItems == menuItems.Count - 1)
+                {
+                    runMenu = false;
+                }
+                else if (selectedMenuItems <= menuItems.Count - 1)
+                {
+                    balance = checkAccounts[selectedMenuItems].balance;
+                    accountId = checkAccounts[selectedMenuItems].id;
+                    Console.Clear();
+                    Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
+                    //Console.WriteLine($" account id: {accountId}");
+
+                    Console.WriteLine($" Enter amount you wish to withdraw: ");
+                    input = Console.ReadLine();
+                    decimal.TryParse(input, out amount);
+                    if (amount < 0)
+                    {
+                        Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
+                    }
+                    else if (checkAccounts[selectedMenuItems].balance < amount)
+                    {
+                        Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
+                    }
+                    else
+                    {
+                        amount = checkAccounts[selectedMenuItems].balance -= amount;
+                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {amount}");
+                        SQLconnection.UpdateAccountBalance(amount, checkAccounts[selectedMenuItems].id, userID);
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                    }
+
+                }
+                else { }
+
             }
-            else if (checkAccounts[accountID].balance < amount)
-            {
-                Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
-            }
-            else
-            {
-                amount = checkAccounts[accountID].balance -= amount;
-                Console.WriteLine($"\n Account: {checkAccounts[accountID].name} New balance: {amount}");
-                SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
-            }
+            menuIndex = 0;
+            //decimal amount;
+            //List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
+
+            //Console.Clear();
+            //Console.WriteLine("\n Which account do you wish to withdraw money from?\n");
+
+            //for (int i = 0; i < checkAccounts.Count; i++)
+            //{
+            //    Console.WriteLine($" {i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
+            //}
+
+            //Console.Write("\n ===> ");
+            //string? accountChoice = Console.ReadLine();
+
+            //int.TryParse(accountChoice, out int accountID);
+            //accountID -= 1;
+
+            //Console.WriteLine("\n Amount to withdraw from your account?\n");
+            //Console.Write(" ===> ");
+            //string? transfer = Console.ReadLine();
+            //decimal.TryParse(transfer, out amount);
+
+            //if (amount <= 0)
+            //{
+            //    Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
+            //}
+            //else if (checkAccounts[accountID].balance < amount)
+            //{
+            //    Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
+            //}
+            //else
+            //{
+            //    amount = checkAccounts[accountID].balance -= amount;
+            //    Console.WriteLine($"\n Account: {checkAccounts[accountID].name} New balance: {amount}");
+            //    SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
+            //}
         }
 
         public static void OpenAccount(int userID)
