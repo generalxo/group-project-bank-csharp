@@ -454,7 +454,7 @@
                     Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
                     //Console.WriteLine($" account id: {accountId}");
 
-                    Console.WriteLine($" Enter amount you wish to withdraw: ");
+                    Console.Write($" Enter amount you wish to withdraw: ");
                     input = Console.ReadLine();
                     decimal.TryParse(input, out amount);
                     if (amount < 0)
@@ -479,42 +479,7 @@
 
             }
             menuIndex = 0;
-            //decimal amount;
-            //List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
 
-            //Console.Clear();
-            //Console.WriteLine("\n Which account do you wish to withdraw money from?\n");
-
-            //for (int i = 0; i < checkAccounts.Count; i++)
-            //{
-            //    Console.WriteLine($" {i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
-            //}
-
-            //Console.Write("\n ===> ");
-            //string? accountChoice = Console.ReadLine();
-
-            //int.TryParse(accountChoice, out int accountID);
-            //accountID -= 1;
-
-            //Console.WriteLine("\n Amount to withdraw from your account?\n");
-            //Console.Write(" ===> ");
-            //string? transfer = Console.ReadLine();
-            //decimal.TryParse(transfer, out amount);
-
-            //if (amount <= 0)
-            //{
-            //    Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
-            //}
-            //else if (checkAccounts[accountID].balance < amount)
-            //{
-            //    Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
-            //}
-            //else
-            //{
-            //    amount = checkAccounts[accountID].balance -= amount;
-            //    Console.WriteLine($"\n Account: {checkAccounts[accountID].name} New balance: {amount}");
-            //    SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
-            //}
         }
 
         public static void OpenAccount(int userID)
@@ -526,16 +491,16 @@
             string newAccountName = "";
             string menuMsg = $" Please select an option ";
             List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
-            List<string> menuItems = new List<string>() {"Open Account", "Exit"};
+            List<string> menuItems = new List<string>() { "Open Account", "Exit" };
 
-            while(runMenu)
+            while (runMenu)
             {
                 int selectedMenuItems = DrawMenu(menuItems, menuMsg);
 
                 if (selectedMenuItems == 0)
                 {
                     menuIndex = 0;
-                    List<string> menuItems2 = new List<string>() {"Checking", "Salary", "Savings", "Exit"};
+                    List<string> menuItems2 = new List<string>() { "Checking", "Salary", "Savings", "Exit" };
                     Console.WriteLine($"{menuItems[selectedMenuItems]}");
 
                     runMenu2 = true;
@@ -650,76 +615,7 @@
                 else { }
             }
             menuIndex = 0;
-            //Console.WriteLine("\n What type of account do you want to open?");
-            //Console.WriteLine("\n Checking");
-            //Console.WriteLine(" Salary");
-            //Console.WriteLine(" Savings");
-            //Console.Write("===> ");
-            //string? accountType = Console.ReadLine();
 
-            //List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
-
-            //if (!string.IsNullOrEmpty(accountType)) //Checks to see if the account type isn't null or empty before proceeding
-            //{
-            //    bool hasAccountType = false;
-
-            //    if (accountType == "Checking")
-            //    {
-            //        foreach (BankAccountModel bankAccountModel in checkAccounts)
-            //        {
-            //            if (bankAccountModel.name == "Checking")
-            //            {
-            //                hasAccountType = true;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //    else if (accountType == "Salary")
-            //    {
-            //        foreach (BankAccountModel bankAccountModel in checkAccounts)
-            //        {
-            //            if (bankAccountModel.name == "Salary")
-            //            {
-            //                hasAccountType = true;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //    else if (accountType == "Savings")
-            //    {
-            //        foreach (BankAccountModel bankAccountModel in checkAccounts)
-            //        {
-            //            if (bankAccountModel.name == "Savings")
-            //            {
-            //                hasAccountType = true;
-            //                break;
-            //            }
-            //        }
-            //    }
-
-            //    if (hasAccountType)
-            //    {
-            //        Console.WriteLine("\nERROR: You have already opened an account of this type"); //The account already exists in the database
-            //    }
-            //    else
-            //    {
-            //        BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
-            //        {
-            //            name = accountType,
-            //            interest_rate = 0.75M,
-            //            user_id = userID,
-            //            currency_id = 1,
-            //            balance = 0
-
-            //        };
-            //        SQLconnection.OpenAccount(bankAccountModel);
-            //        Console.WriteLine("\nAccount successfully opened");
-            //    }
-            //}
-            //else
-            //{
-            //    Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
-            //}
         }
 
         public static void ReturnOnInterest(int userID, decimal input)
