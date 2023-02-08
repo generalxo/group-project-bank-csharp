@@ -69,17 +69,6 @@
             }
 
         }
-<<<<<<< HEAD
-
-        enum userRoles
-        {
-            admin = 1,
-            client = 2,
-            clientAdmin = 3
-        }
-
-=======
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
         static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
@@ -89,30 +78,18 @@
             int userTypeId = currentUser[0].role_id;
 
             //if admin or clientAdmin
-<<<<<<< HEAD
-            if (userTypeId == (int)userRoles.admin || userTypeId == (int)userRoles.clientAdmin)
-            {
-                menuItems.AddRange(new List<string>()
-                {
-                    "Create New Users",
-=======
             if (userTypeId == (int)UserModel.UserRoles.admin || userTypeId == (int)UserModel.UserRoles.clientAdmin)
             {
                 menuItems.AddRange(new List<string>()
                 {
                     "Create New User",
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
                     "AdminOption1",
                     "AdminOption2",
                 });
             }
 
             //if client or clientAdmin
-<<<<<<< HEAD
-            if (userTypeId == (int)userRoles.client || userTypeId == (int)userRoles.clientAdmin)
-=======
             if (userTypeId == (int)UserModel.UserRoles.client || userTypeId == (int)UserModel.UserRoles.clientAdmin)
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
             {
                 menuItems.AddRange(new List<string>()
                 {
@@ -121,22 +98,10 @@
                     "Withdraw",
                     "Loan",
                     "Account",
-<<<<<<< HEAD
-                    "Logout"
-                });
-            }
-
-            //if admin add logout in the menu options
-            if (userTypeId == (int)userRoles.admin)
-            {
-                menuItems.Add("Logout");
-            }
-=======
                     "Create New User",
                     "Logout"
                 });
             }
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
 
             while (runMenu)
             {
@@ -235,27 +200,8 @@
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
-<<<<<<< HEAD
-                    case "Create New Users":
-                        Console.WriteLine(" Create New Users would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "AdminOption1":
-                        Console.WriteLine(" AdminOption1 would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "AdminOption2":
-                        Console.WriteLine(" AdminOption2 would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "Logout":
-=======
 
                     case 6:
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
                         menuIndex = 0;
                         runMenu = false;
                         break;
