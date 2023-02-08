@@ -60,7 +60,7 @@ namespace group_project_bank_csharp
             }
         }
 
-        public static void UpdateAccountBalance(string transactionName, decimal amount, int id, int user_id)
+        public static bool UpdateAccountBalance(string transactionName, decimal amount, int id, int user_id)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
@@ -79,11 +79,13 @@ namespace group_project_bank_csharp
                         cnn.Execute($@"INSERT INTO bank_transaction (name, user_id, from_account_id, amount_sender)
                         VALUES ('{transactionName}', '{user_id}', '{id}', '{amount.ToString(numberFormat)}')", new DynamicParameters());
                         transaction.Commit();
+                        return true;
                     }
                 }
-                catch (Exception e)
+                catch (Npgsql.PostgresException)
                 {
-                    Console.WriteLine(e.Message);
+                    //Console.WriteLine(e.Message);
+                    return false;
                 }
             }
         }
@@ -118,9 +120,9 @@ namespace group_project_bank_csharp
                         transaction.Commit();
                         return true;
                     }
-                    catch (Npgsql.PostgresException e)
+                    catch (Npgsql.PostgresException)
                     {
-                        Console.WriteLine(e);
+                        //Console.WriteLine(e.Message);
                         return false;
                     }
                 }
