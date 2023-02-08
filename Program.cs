@@ -75,34 +75,18 @@
             bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
-            List<string> menuItems = new List<string>();
+            List<string> menuItems = new List<string>() 
+            {
+                "Balance",
+                "Transfer",
+                "Withdraw",
+                "Loan",
+                "Account",
+                "Create New User",
+                "Logout"
+            };
+
             int userTypeId = currentUser[0].role_id;
-
-            //if admin or clientAdmin
-            if (userTypeId == (int)UserModel.UserRoles.admin || userTypeId == (int)UserModel.UserRoles.clientAdmin)
-            {
-                menuItems.AddRange(new List<string>()
-                {
-                    "Create New User",
-                    "AdminOption1",
-                    "AdminOption2",
-                });
-            }
-
-            //if client or clientAdmin
-            if (userTypeId == (int)UserModel.UserRoles.client || userTypeId == (int)UserModel.UserRoles.clientAdmin)
-            {
-                menuItems.AddRange(new List<string>()
-                {
-                    "Balance",
-                    "Transfer",
-                    "Withdraw",
-                    "Loan",
-                    "Account",
-                    "Create New User",
-                    "Logout"
-                });
-            }
 
             while (runMenu)
             {
@@ -110,6 +94,7 @@
                 switch (selectedMenuItems)
                 {
                     case 0:
+                        // Display account information method begins here
                         Console.Clear();
                         Console.WriteLine("");
                         Console.WriteLine(" Your Balance");
@@ -139,69 +124,45 @@
 
                         break;
                     case 1:
+                        // Transfer method begins here
                         Transfer(currentUser[0].id);
-
-                        //Console.WriteLine(" Press any key to continue");
-                        //Console.ReadKey();
                         break;
+
                     case 2:
+                        // Withdraw method begins here
                         Withdraw(currentUser[0].id);
                         break;
+
                     case 3:
+                        // Loan method begins here
                         Console.WriteLine(" Loan would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
 
                     case 4:
+                        // Open Account method begins here
                         OpenAccount(currentUser[0].id);
-                        break;
-                    //bool repeat = true;
-                    //do
-                    //{
-                    //    Console.Clear();
-                    //    Console.WriteLine("\n ========== Account ==========");
-                    //    Console.WriteLine("\n Please select an option:");
-                    //    Console.WriteLine("\n 1. Create account");
-                    //    Console.WriteLine(" 2. Return of interest");
-                    //    Console.WriteLine(" 3. Exit");
-                    //    Console.Write("\n ===>");
-                    //    string? userOption = Console.ReadLine();
-
-                    //    if (userOption == "1")
-                    //    {
-                    //        Console.Clear();
-                    //        OpenAccount(currentUser[0].id);
-                    //        Console.WriteLine(" Press any key to continue");
-                    //        Console.ReadKey();
-                    //    }
-                    //    else if (userOption == "2")
-                    //    {
-                    //        Console.Clear();
-                    //        ReturnOnInterest(currentUser[0].id, 1000);
-                    //        Console.WriteLine(" Press any key to continue");
-                    //        Console.ReadKey();
-                    //    }
-                    //    else if (userOption == "3")
-                    //    {
-                    //        repeat = false;
-                    //        break;
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.WriteLine(" ERROR: Please input a number shown on the menu.");
-                    //        Console.WriteLine(" Press any key to continue");
-                    //        Console.ReadKey();
-                    //    }
-                    //} while (repeat);
+                        break;                   
 
                     case 5:
-                        CreateNewUser();
-                        Console.WriteLine(" Press any key to continue");
+                        // Create user method begins here
+                        if (userTypeId == (int)UserModel.UserRoles.client)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\n You do not have access to this function.");
+                        }
+                        else if (userTypeId == (int)UserModel.UserRoles.clientAdmin || userTypeId == (int)UserModel.UserRoles.admin)
+                        {
+                            Console.Clear();
+                            CreateNewUser();
+                        }
+                        Console.WriteLine("\n Press any key to continue");
                         Console.ReadKey();
                         break;
 
                     case 6:
+                        // Logout method begins here
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -452,7 +413,6 @@
                     accountId = checkAccounts[selectedMenuItems].id;
                     Console.Clear();
                     Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
-                    //Console.WriteLine($" account id: {accountId}");
 
                     Console.Write($" Enter amount you wish to withdraw: ");
                     input = Console.ReadLine();
@@ -479,7 +439,6 @@
 
             }
             menuIndex = 0;
-
         }
 
         public static void OpenAccount(int userID)
@@ -513,7 +472,6 @@
 
                         if (selectedMenuItems2 == 0)
                         {
-                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
                             foreach (BankAccountModel bankAccountModel in checkAccounts)
                             {
                                 if (bankAccountModel.name == "Checking")
@@ -531,7 +489,6 @@
                         }
                         else if (selectedMenuItems2 == 1)
                         {
-                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
                             foreach (BankAccountModel bankAccountModel in checkAccounts)
                             {
                                 if (bankAccountModel.name == "Salary")
@@ -549,7 +506,6 @@
                         }
                         else if (selectedMenuItems2 == 2)
                         {
-                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
                             foreach (BankAccountModel bankAccountModel in checkAccounts)
                             {
                                 if (bankAccountModel.name == "Savings")
@@ -567,7 +523,6 @@
                         }
                         else if (selectedMenuItems2 == 3)
                         {
-                            //Console.WriteLine($"{menuItems2[selectedMenuItems2]}");
                             // This exits the menu
                             menuIndex = 0;
                             runMenu2 = false;
@@ -615,7 +570,6 @@
                 else { }
             }
             menuIndex = 0;
-
         }
 
         public static void ReturnOnInterest(int userID, decimal input)
