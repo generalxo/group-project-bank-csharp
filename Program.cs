@@ -1,4 +1,8 @@
-﻿namespace group_project_bank_csharp
+﻿using System.Net.NetworkInformation;
+using System.Text;
+using System.Xml.Linq;
+
+namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -99,6 +103,7 @@
                     "Loan",
                     "Account",
                     "Create New User",
+                    "Display Transactions",
                     "Logout"
                 });
             }
@@ -124,7 +129,7 @@
                             //Loop for each currency
                             for (int j = 0; j < currencies.Count; j++)
                             {
-                                //check if account currency id == currencies_id --> display currency_name
+                                //check if account currency id == currencies_id --> toDisplay currency_name
                                 if (bankAccounts[i].currency_id == currencies[j].id)
                                 {
                                     Console.WriteLine($" {bankAccounts[i].name} {bankAccounts[i].balance}: {currencies[j].name}");
@@ -199,6 +204,11 @@
                         break;
 
                     case 6:
+                        Console.WriteLine(DisplayTransactions(currentUser[0].id));
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case 7:
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -377,8 +387,8 @@
                     }
                     catch (Npgsql.PostgresException e)
                     {
-                        Console.WriteLine("Something strange happened. Unauthorized transaction" +
-                            "Please try again later");
+                        Console.WriteLine("Something strange happened. Unauthorized transaction." +
+                            "\nPlease try again later");
                         Console.WriteLine(e.ErrorCode);
                     }
                 }
@@ -472,10 +482,11 @@
                     }
                     else
                     {
-                        amount = checkAccounts[selectedMenuItems].balance -= amount;
+                        decimal newBalance = checkAccounts[selectedMenuItems].balance -= amount;
                         string transactionName = "Withdraw";
-                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {amount}");
-                        SQLconnection.UpdateAccountBalance(transactionName, amount, checkAccounts[selectedMenuItems].id, userID);
+                        int currencyId = checkAccounts[selectedMenuItems].currency_id;
+                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {newBalance}");
+                        SQLconnection.UpdateAccountBalanceWithdraw(transactionName, amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                     }
@@ -519,7 +530,7 @@
             //{
             //    amount = checkAccounts[accountID].balance -= amount;
             //    Console.WriteLine($"\n Account: {checkAccounts[accountID].name} New balance: {amount}");
-            //    SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
+            //    SQLconnection.UpdateAccountBalanceWithdraw(amount, checkAccounts[accountID].id, userID);
             //}
         }
 
@@ -646,6 +657,32 @@
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"INVALID INPUT {input}! Try again.");
             Console.ResetColor();
+        }
+
+        public static string DisplayTransactions(int userId)
+        {
+            Console.Clear();
+            List<TransactionsModel> transactions = SQLconnection.LoadTransactions(userId);
+            List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
+
+            //map currencies Ids where the key is the currencyId and the value is the currency name
+            Dictionary<int, string> currencyMap = currencyDB.ToDictionary(x => x.id, x => x.name);
+
+            string toDisplay = "";
+
+            for (int i = 0; i < transactions.Count; i++)
+            {
+                int currencyId = transactions[i].currency_id_sender;
+                string currencyName = currencyMap.ContainsKey(currencyId) ? currencyMap[currencyId] : "Unknown Currency";
+                toDisplay += $"\n {i + 1}: {transactions[i].name}, {transactions[i].amount_sender} {currencyName}, {transactions[i].timestamp}\n";
+            }
+
+            if (toDisplay == "")
+            {
+                toDisplay = "No transactions to display";
+            }
+
+            return toDisplay;
         }
 
         public static void Login()
