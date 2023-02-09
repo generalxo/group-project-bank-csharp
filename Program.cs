@@ -75,7 +75,7 @@
             bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
-            List<string> menuItems = new List<string>() 
+            List<string> menuItems = new List<string>()
             {
                 "Balance",
                 "Transfer",
@@ -143,7 +143,7 @@
                     case 4:
                         // Open Account method begins here
                         OpenAccount(currentUser[0].id);
-                        break;                   
+                        break;
 
                     case 5:
                         // Create user method begins here
@@ -289,71 +289,151 @@
 
         public static void Transfer(int userID)
         {
-            decimal amount, amountTo;
-            int fromAccountID, toAccountID;
+            menuIndex = 0;
+
+            //Declatation
             List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+            List<string> menuItems = new List<string>();
+            bool runMenu = true;
+            bool runMenu2 = true;
+            string? senderAccountName, reciverAccountName, input;
+            int senderAccountId, reciverAccountId, senderAccountPos, reciverAccountPos;
+            decimal senderBalance, reciverBalance;
+            string menuMsg = " Please select an account to transfer from\n ";
+            string menuMsg2 = "\n Please select a reciver account";
 
-            Console.WriteLine("\nWhich account do you wish to transfer money from?");
-            fromAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
-            bool userChoiceAccountIsValid = fromAccountID != -1; //check input for account's type
-
-            if (userChoiceAccountIsValid)
+            //Create menu Items
+            for (int i = 0; i < checkaccounts.Count; i++)
             {
-                amount = GetTransferAmount();
-                decimal balanceAccount = checkaccounts[fromAccountID].balance;
-
-                //check balance to withdraw amount "from" account
-                if (amount > balanceAccount)
-                {
-                    Console.WriteLine("ERROR! Insuficient amount");
-                }
-                //if there is enough money, get data "to" deposit
-                else
-                {
-                    Console.WriteLine("\nWhich account do you wish to transfer money to?");
-                    toAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
-                    bool userChoiceTargetAccountIsValid = toAccountID != -1; //check input for account's type
-
-                    if (userChoiceTargetAccountIsValid)
-                    {
-                        //check currencies
-                        if (checkaccounts[fromAccountID].currency_id != checkaccounts[toAccountID].currency_id)
-                        {
-                            //transaction between different currencies
-                            amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
-                        }
-                        else
-                        {
-                            //transaction between same currency
-                            amountTo = amount;
-                        }
-
-                        //execute transaction
-                        SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("\nMoney transfered!".ToUpper());
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        //wrong target account choice
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Invalid Account Target".ToUpper());
-                        Console.ResetColor();
-                    }
-                }
+                menuItems.Add(checkaccounts[i].name);
             }
+            menuItems.Add("Exit");
 
-        }
+            //Menu Start
+            while (runMenu)
+            {
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
 
-        public static decimal GetTransferAmount()
-        {
-            Console.WriteLine("\nHow much do you want to transfer?");
-            Console.Write("===> ");
-            string? transfer = Console.ReadLine();
-            decimal amount;
-            decimal.TryParse(transfer, out amount);
-            return amount;
+                //Exit case
+                if (selectedMenuItems == menuItems.Count - 1)
+                {
+                    runMenu = false;
+                }
+                //select account case
+                else if (selectedMenuItems <= menuItems.Count - 1)
+                {
+                    Console.Clear();
+                    senderAccountId = checkaccounts[selectedMenuItems].id;
+                    senderAccountName = checkaccounts[selectedMenuItems].name;
+                    senderBalance = checkaccounts[selectedMenuItems].balance;
+                    senderAccountPos = selectedMenuItems;
+                    Console.WriteLine($"\n {checkaccounts[selectedMenuItems].name} account was selected");
+                    menuMsg2 = menuMsg2 + $"\n Sender account: {checkaccounts[selectedMenuItems].name}";
+                    Console.ReadKey();
+                    runMenu2 = true;
+                    menuIndex = 0;
+
+                    //Submenu Start
+                    while (runMenu2)
+                    {
+                        selectedMenuItems = DrawMenu(menuItems, menuMsg2);
+                        reciverAccountName = "";
+                        //Exit case
+                        if (selectedMenuItems == menuItems.Count - 1)
+                        {
+                            runMenu2 = false;
+                        }
+                        else if (selectedMenuItems <= menuItems.Count - 1)
+                        {
+
+                            Console.Clear();
+                            reciverAccountId = checkaccounts[selectedMenuItems].id;
+                            reciverAccountName = checkaccounts[selectedMenuItems].name;
+                            reciverAccountPos = selectedMenuItems;
+
+                            //Same account was selected
+                            if (senderAccountName == reciverAccountName)
+                            {
+                                Console.Clear();
+                                Console.WriteLine($"\n Can not select the same account");
+                                Console.WriteLine($" Press any key to continue");
+                                Console.ReadKey();
+                            }
+                            //Select reciver account
+                            else
+                            {
+                                reciverBalance = checkaccounts[selectedMenuItems].balance;
+
+                                Console.WriteLine($"\n {checkaccounts[selectedMenuItems].name} account was selected");
+                                Console.ReadKey();
+                                Console.Clear();
+                                Console.WriteLine($"\n Sender account: {senderAccountName}: {senderBalance}");
+                                Console.WriteLine($" Reciver account: {reciverAccountName}: {reciverBalance}");
+                                Console.Write($"\n Enter amount you wish to transfer: ");
+                                input = Console.ReadLine();
+
+
+                                decimal.TryParse(input, out decimal transferAmount);
+                                //Transfer amount is negative
+                                if (transferAmount <= 0)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine($"\n Amount can not be negative");
+                                    Console.WriteLine($" Press any key to continue");
+                                    Console.ReadKey();
+                                    runMenu = false;
+                                    runMenu2 = false;
+                                }
+                                //Transfer amount larger than balance
+                                else if (transferAmount > senderBalance)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine($"\n Transfer amount exceeds account balance");
+                                    Console.WriteLine($" Press any key to continue");
+                                    Console.ReadKey();
+                                    runMenu = false;
+                                    runMenu2 = false;
+                                }
+                                //Transfer Start
+                                else
+                                {
+
+                                    //check currencies
+                                    if (checkaccounts[senderAccountPos].currency_id != checkaccounts[reciverAccountPos].currency_id)
+                                    {
+                                        //transaction between different currencies
+                                        transferAmount = CurrencyExchange(transferAmount, senderAccountPos, reciverAccountPos, checkaccounts);
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount);
+                                        Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
+                                        Console.WriteLine($"\n Press any key to continue");
+                                        Console.ReadKey();
+
+                                        runMenu = false;
+                                        runMenu2 = false;
+                                    }
+                                    //transaction between same currency
+                                    else
+                                    {
+                                        //execute transaction
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount);
+
+                                        Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
+                                        Console.WriteLine($"\n Press any key to continue");
+                                        Console.ReadKey();
+                                        runMenu = false;
+                                        runMenu2 = false;
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+            menuIndex = 0;
         }
 
         public static int DisplayAndSelectAccount(List<BankAccountModel> checkaccounts)
