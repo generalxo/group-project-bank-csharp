@@ -483,10 +483,9 @@ namespace group_project_bank_csharp
                     else
                     {
                         decimal newBalance = checkAccounts[selectedMenuItems].balance -= amount;
-                        string transactionName = "Withdraw";
                         int currencyId = checkAccounts[selectedMenuItems].currency_id;
                         Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {newBalance}");
-                        SQLconnection.UpdateAccountBalanceWithdraw(transactionName, amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
+                        SQLconnection.UpdateAccountBalanceWithdraw(amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                     }

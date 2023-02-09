@@ -60,7 +60,7 @@ namespace group_project_bank_csharp
             }
         }
 
-        public static bool UpdateAccountBalanceWithdraw(string transactionName, decimal amount, int id, int user_id, int currency_id)
+        public static bool UpdateAccountBalanceWithdraw(decimal amount, int id, int user_id, int currency_id)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
@@ -80,7 +80,7 @@ namespace group_project_bank_csharp
                         SET balance = balance + '{amount.ToString(numberFormat)}'
                         WHERE id = '{id}' AND user_id = '{user_id}';
                         INSERT INTO bank_transaction (name, user_id, from_account_id, amount_sender, currency_id_sender)
-                        VALUES ('{transactionName}', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
+                        VALUES ('Withdraw', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
                         transaction.Commit();
                         return true;
                     }
@@ -93,7 +93,7 @@ namespace group_project_bank_csharp
             }
         }
 
-        public static bool UpdateAccountBalanceDeposit(string transactionName, decimal amount, int id, int user_id, int currency_id)
+        public static bool UpdateAccountBalanceDeposit(decimal amount, int id, int user_id, int currency_id)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
@@ -113,7 +113,7 @@ namespace group_project_bank_csharp
                         SET balance = balance - '{amount.ToString(numberFormat)}'
                         WHERE id = '{id}' AND user_id = '{user_id}';
                         INSERT INTO bank_transaction (name, user_id, from_account_id, amount_sender, currency_id_sender)
-                        VALUES ('{transactionName}', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
+                        VALUES ('Deposit', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
                         transaction.Commit();
                         return true;
                     }
