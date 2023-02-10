@@ -110,7 +110,7 @@ namespace group_project_bank_csharp
                     {
                         cnn.Execute($@"
                         UPDATE bank_account 
-                        SET balance = balance - '{amount.ToString(numberFormat)}'
+                        SET balance = balance + '{amount.ToString(numberFormat)}'
                         WHERE id = '{id}' AND user_id = '{user_id}';
                         INSERT INTO bank_transaction (name, user_id, from_account_id, amount_sender, currency_id_sender)
                         VALUES ('Deposit', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
