@@ -1,8 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using System.Text;
-using System.Xml.Linq;
-
-namespace group_project_bank_csharp
+﻿namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -129,8 +125,7 @@ namespace group_project_bank_csharp
                     case 1:
                         // Transfer method begins here
                         Transfer(currentUser[0].id);
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
+
                         break;
 
                     case 2:
@@ -166,14 +161,8 @@ namespace group_project_bank_csharp
                         Console.ReadKey();
                         break;
 
-                    //                    case 6:
-
-                    //                        Console.WriteLine(DisplayTransactions(currentUser[0].id));
-                    //                        Console.WriteLine(" Press any key to continue");
-                    //                        Console.ReadKey();
-                    //                        break;
+                    // Logout method begins here
                     case 6:
-                        // Logout method begins here
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -300,70 +289,6 @@ namespace group_project_bank_csharp
 
         public static void Transfer(int userID)
         {
-            //<<<<<<< HEAD
-            //            decimal amount, amountTo, balanceAccount;
-            //            int fromAccountID, toAccountID;
-            //            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
-            //            int currencyIdSender, currencyIdReceiver;
-
-            //            Console.WriteLine("\nWhich account do you wish to transfer money FROM?");
-            //            fromAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
-            //            bool userChoiceAccountIsValid = fromAccountID != -1; //check input for account's type
-
-            //            Console.WriteLine("\nWhich account do you wish to transfer money TO?");
-            //            toAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
-            //            bool userChoiceTargetAccountIsValid = toAccountID != -1; //check input for account's type
-
-            //            balanceAccount = checkaccounts[fromAccountID].balance;
-            //            currencyIdSender = checkaccounts[fromAccountID].currency_id; //currency id from_account
-            //            currencyIdReceiver = checkaccounts[toAccountID].currency_id; //currency id to_account
-
-            //            if (userChoiceAccountIsValid && userChoiceTargetAccountIsValid)
-            //            {
-            //                Console.Clear();
-            //                amount = GetTransferAmount();
-
-            //                //check balance to withdraw amount "from" account
-            //                if (amount > balanceAccount)
-            //                {
-            //                    Console.WriteLine("ERROR! Insuficient amount");
-            //                }
-            //                //if there is enough money, get data "to" deposit
-            //                else
-            //                {
-            //                    //check currencies
-            //                    if (currencyIdSender != currencyIdReceiver)
-            //                    {
-            //                        //transaction between different currencies
-            //                        amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
-            //                    }
-            //                    else
-            //                    {
-            //                        //transaction between same currency
-            //                        amountTo = amount;
-            //                    }
-
-            //                    try
-            //                    {
-            //                        //execute transaction
-            //                        SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo, currencyIdSender, currencyIdReceiver);
-            //                        Console.ForegroundColor = ConsoleColor.Cyan;
-            //                        Console.WriteLine("\nMoney transfered!".ToUpper());
-            //                        Console.ResetColor();
-            //                    }
-            //                    catch (Npgsql.PostgresException e)
-            //                    {
-            //                        Console.WriteLine("Something strange happened. Unauthorized transaction." +
-            //                            "\nPlease try again later");
-            //                        Console.WriteLine(e.ErrorCode);
-            //                    }
-            //                }
-            //            }
-            //            else
-            //            {
-            //                InvalidInput("");
-            //            }
-            //=======
             menuIndex = 0;
 
             //Declatation
@@ -513,28 +438,6 @@ namespace group_project_bank_csharp
             menuIndex = 0;
         }
 
-        public static int DisplayAndSelectAccount(List<BankAccountModel> checkaccounts)
-        {
-            //To Display and select available accounts
-            for (int i = 0; i < checkaccounts.Count; i++)
-            {
-                Console.WriteLine($"\n{i + 1}: {checkaccounts[i].name}");
-            }
-
-            Console.Write("\nType ===> ");
-            int.TryParse(Console.ReadLine(), out int accountID);
-
-            bool isNotValidIndex = accountID > checkaccounts.Count || accountID <= 0;
-
-            if (isNotValidIndex)
-            {
-                return -1;
-            }
-            else
-            {
-                return accountID -= 1;
-            }
-        }
 
         public static void Withdraw(int userID)
         {
@@ -571,11 +474,6 @@ namespace group_project_bank_csharp
                     Console.Clear();
                     Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
 
-                    //Console.WriteLine($" account id: {accountId}");
-
-                    Console.WriteLine($" Enter amount you wish to withdraw: ");
-
-
                     Console.Write($" Enter amount you wish to withdraw: ");
 
                     input = Console.ReadLine();
@@ -594,11 +492,6 @@ namespace group_project_bank_csharp
                         int currencyId = checkAccounts[selectedMenuItems].currency_id;
                         Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {newBalance}");
                         SQLconnection.UpdateAccountBalanceWithdraw(amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
-
-                        //amount = checkAccounts[selectedMenuItems].balance -= amount;
-                        //Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {amount}");
-                        //SQLconnection.UpdateAccountBalance(amount, checkAccounts[selectedMenuItems].id, userID);
-
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                     }
@@ -848,8 +741,7 @@ namespace group_project_bank_csharp
                     if (checkUsers.Count < 1)
                     {
                         Console.WriteLine("\n ERROR: Login failed");
-                        //Console.WriteLine(checkUsers.Count);
-                        //Console.ReadLine();
+
                         loginAttempts--;
                     }
                     else
