@@ -78,6 +78,7 @@
             {
                 "Balance",
                 "Transfer",
+                "Deposit",
                 "Withdraw",
                 "Loan",
                 "Account",
@@ -120,32 +121,36 @@
                         Console.WriteLine("");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
-
                         break;
+
                     case 1:
                         // Transfer method begins here
                         Transfer(currentUser[0].id);
-
                         break;
 
                     case 2:
+                        // Deposit method begins here
+                        Deposit(currentUser[0].id);
+                        break;
+
+                    case 3:
                         // Withdraw method begins here
                         Withdraw(currentUser[0].id);
                         break;
 
-                    case 3:
+                    case 4:
                         // Loan method begins here
                         Console.WriteLine(" Loan would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
 
-                    case 4:
+                    case 5:
                         // Open Account method begins here
                         OpenAccount(currentUser[0].id);
                         break;
 
-                    case 5:
+                    case 6:
                         // Create user method begins here
                         if (userTypeId == (int)UserModel.UserRoles.client)
                         {
@@ -161,8 +166,8 @@
                         Console.ReadKey();
                         break;
 
-                    // Logout method begins here
-                    case 6:
+                    case 7:
+                        // Logout method begins here
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -438,6 +443,75 @@
             menuIndex = 0;
         }
 
+        public static void Deposit(int userID)
+        {
+            string? input;
+            decimal balance;
+            int accountId;
+            menuIndex = 0;
+            bool runMenu = true;
+            decimal amount;
+            string menuMsg = $"\n Please select an option ";
+            List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
+            List<string> menuItems = new List<string>();
+
+            for (int i = 0; i < checkAccounts.Count; i++)
+            {
+                menuItems.Add(checkAccounts[i].name);
+            }
+            menuItems.Add("Exit");
+
+
+            while (runMenu)
+            {
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
+
+                //Exit case
+                if (selectedMenuItems == menuItems.Count - 1)
+                {
+                    runMenu = false;
+                }
+                else if (selectedMenuItems <= menuItems.Count - 1)
+                {
+                    balance = checkAccounts[selectedMenuItems].balance;
+                    accountId = checkAccounts[selectedMenuItems].id;
+                    Console.Clear();
+                    Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
+
+                    Console.Write($" Enter amount you wish to deposit: ");
+
+                    input = Console.ReadLine();
+                    decimal.TryParse(input, out amount);
+                    if (amount < 0)
+                    {
+                        Console.WriteLine("\n Amount to deposit cannot be a negative value."); //message for negative amount
+                        Console.WriteLine("\n Press any key to continue");
+                        Console.ReadKey();
+                    }
+                    else if (1000000 < amount)
+                    {
+                        Console.WriteLine("\n ERROR! Not allowed. You cannot deposit more than one million");
+                        Console.WriteLine("\n Press any key to continue");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        decimal newBalance = checkAccounts[selectedMenuItems].balance += amount;
+                        int currencyId = checkAccounts[selectedMenuItems].currency_id;
+                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {newBalance}");
+                        Console.Write("\n --------------------------------------------\n");
+                        ReturnOnInterest(userID, amount);
+                        SQLconnection.UpdateAccountBalanceDeposit(amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                    }
+
+                }
+                else { }
+
+            }
+            menuIndex = 0;
+        }
 
         public static void Withdraw(int userID)
         {
@@ -480,11 +554,15 @@
                     decimal.TryParse(input, out amount);
                     if (amount < 0)
                     {
-                        Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
+                        Console.WriteLine("\n Amount to withdraw cannot be a negative value."); //message for negative amount
+                        Console.WriteLine("\n Press any key to continue");
+                        Console.ReadKey();
                     }
                     else if (checkAccounts[selectedMenuItems].balance < amount)
                     {
                         Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
+                        Console.WriteLine("\n Press any key to continue");
+                        Console.ReadKey();
                     }
                     else
                     {
@@ -646,7 +724,6 @@
 
                 if (Account.name == "Savings" && Account.interest_rate > 0)
                 {
-                    Console.Clear();
                     Console.WriteLine("\n The information below shows the return of the interest rate for your deposit to your savings account.");
                     Console.WriteLine("\n Return from deposit:");
                     Console.WriteLine($" 1 month:  {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 1) * 100) / 100} {AccountCurrency[userID - 1].name}");
@@ -660,8 +737,8 @@
             }
             if (hasSavingsAccount == false)
             {
-                Console.Clear();
-                Console.WriteLine("\n ERROR: No account with a set interest rate found.");
+                Console.WriteLine("\n The information below shows the return of the interest rate for your deposit to your savings account.");
+                Console.WriteLine("\n No account with a set interest rate found.");
             }
         }
 
