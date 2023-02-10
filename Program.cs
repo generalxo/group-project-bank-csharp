@@ -117,7 +117,10 @@
                                 }
                             }
                         }
-
+                        Console.WriteLine($"\n ----------------------\n");
+                        Console.WriteLine(" Transaction History");
+                        string transactionList = DisplayTransactions(currentUser[0].id);
+                        Console.WriteLine(transactionList);
                         Console.WriteLine("");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
@@ -767,7 +770,7 @@
 
         public static string DisplayTransactions(int userId)
         {
-            Console.Clear();
+            //Console.Clear();
             List<TransactionsModel> transactions = SQLconnection.LoadTransactions(userId);
             List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
 
@@ -776,11 +779,14 @@
 
             string toDisplay = "";
 
-            for (int i = 0; i < transactions.Count; i++)
+            for (int i = transactions.Count - 1; i >= 0; i--)
             {
-                int currencyId = transactions[i].currency_id_sender;
-                string currencyName = currencyMap.ContainsKey(currencyId) ? currencyMap[currencyId] : "Unknown Currency";
-                toDisplay += $"\n {i + 1}: {transactions[i].name}, {transactions[i].amount_sender} {currencyName}, {transactions[i].timestamp}\n";
+                if (i >= transactions.Count - 10)
+                {
+                    int currencyId = transactions[i].currency_id_sender;
+                    string currencyName = currencyMap.ContainsKey(currencyId) ? currencyMap[currencyId] : "Unknown Currency";
+                    toDisplay += $"\n {transactions[i].name}, {transactions[i].amount_sender} {currencyName}, {transactions[i].timestamp}\n";
+                }
             }
 
             if (toDisplay == "")
