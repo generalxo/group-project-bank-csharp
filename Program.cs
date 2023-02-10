@@ -53,8 +53,8 @@
                 switch (selectedMenuItem)
                 {
                     case 0:
+                        Console.Clear();
                         Login();
-
                         //Console.WriteLine(" Login would start here");
                         //Console.WriteLine(" Enter any key to continue");
                         //Console.ReadKey();
@@ -69,74 +69,24 @@
             }
 
         }
-<<<<<<< HEAD
 
-        enum userRoles
-        {
-            admin = 1,
-            client = 2,
-            clientAdmin = 3
-        }
-
-=======
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
         static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
             string menuMsg = " Welcome to Owl Banking\n Please select an option";
 
-            List<string> menuItems = new List<string>();
+            List<string> menuItems = new List<string>()
+            {
+                "Balance",
+                "Transfer",
+                "Withdraw",
+                "Loan",
+                "Account",
+                "Create New User",
+                "Logout"
+            };
+
             int userTypeId = currentUser[0].role_id;
-
-            //if admin or clientAdmin
-<<<<<<< HEAD
-            if (userTypeId == (int)userRoles.admin || userTypeId == (int)userRoles.clientAdmin)
-            {
-                menuItems.AddRange(new List<string>()
-                {
-                    "Create New Users",
-=======
-            if (userTypeId == (int)UserModel.UserRoles.admin || userTypeId == (int)UserModel.UserRoles.clientAdmin)
-            {
-                menuItems.AddRange(new List<string>()
-                {
-                    "Create New User",
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
-                    "AdminOption1",
-                    "AdminOption2",
-                });
-            }
-
-            //if client or clientAdmin
-<<<<<<< HEAD
-            if (userTypeId == (int)userRoles.client || userTypeId == (int)userRoles.clientAdmin)
-=======
-            if (userTypeId == (int)UserModel.UserRoles.client || userTypeId == (int)UserModel.UserRoles.clientAdmin)
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
-            {
-                menuItems.AddRange(new List<string>()
-                {
-                    "Balance",
-                    "Transfer",
-                    "Withdraw",
-                    "Loan",
-                    "Account",
-<<<<<<< HEAD
-                    "Logout"
-                });
-            }
-
-            //if admin add logout in the menu options
-            if (userTypeId == (int)userRoles.admin)
-            {
-                menuItems.Add("Logout");
-            }
-=======
-                    "Create New User",
-                    "Logout"
-                });
-            }
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
 
             while (runMenu)
             {
@@ -144,6 +94,7 @@
                 switch (selectedMenuItems)
                 {
                     case 0:
+                        // Display account information method begins here
                         Console.Clear();
                         Console.WriteLine("");
                         Console.WriteLine(" Your Balance");
@@ -173,89 +124,45 @@
 
                         break;
                     case 1:
+                        // Transfer method begins here
                         Transfer(currentUser[0].id);
+                        break;
 
-                        //Console.WriteLine(" Press any key to continue");
-                        //Console.ReadKey();
-                        break;
                     case 2:
+                        // Withdraw method begins here
                         Withdraw(currentUser[0].id);
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
                         break;
+
                     case 3:
+                        // Loan method begins here
                         Console.WriteLine(" Loan would start here");
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                         break;
 
                     case 4:
-                        bool repeat = true;
-                        do
-                        {
-                            Console.Clear();
-                            Console.WriteLine("\n ========== Account ==========");
-                            Console.WriteLine("\n Please select an option:");
-                            Console.WriteLine("\n 1. Create account");
-                            Console.WriteLine(" 2. Return of interest");
-                            Console.WriteLine(" 3. Exit");
-                            Console.Write("\n ===>");
-                            string? userOption = Console.ReadLine();
-
-                            if (userOption == "1")
-                            {
-                                Console.Clear();
-                                OpenAccount(currentUser[0].id);
-                                Console.WriteLine(" Press any key to continue");
-                                Console.ReadKey();
-                            }
-                            else if (userOption == "2")
-                            {
-                                Console.Clear();
-                                ReturnOnInterest(currentUser[0].id, 1000);
-                                Console.WriteLine(" Press any key to continue");
-                                Console.ReadKey();
-                            }
-                            else if (userOption == "3")
-                            {
-                                repeat = false;
-                                break;
-                            }
-                            else
-                            {
-                                Console.WriteLine(" ERROR: Please input a number shown on the menu.");
-                                Console.WriteLine(" Press any key to continue");
-                                Console.ReadKey();
-                            }
-                        } while (repeat);
+                        // Open Account method begins here
+                        OpenAccount(currentUser[0].id);
                         break;
 
                     case 5:
-                        CreateNewUser();
-                        Console.WriteLine(" Press any key to continue");
+                        // Create user method begins here
+                        if (userTypeId == (int)UserModel.UserRoles.client)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\n You do not have access to this function.");
+                        }
+                        else if (userTypeId == (int)UserModel.UserRoles.clientAdmin || userTypeId == (int)UserModel.UserRoles.admin)
+                        {
+                            Console.Clear();
+                            CreateNewUser();
+                        }
+                        Console.WriteLine("\n Press any key to continue");
                         Console.ReadKey();
                         break;
-<<<<<<< HEAD
-                    case "Create New Users":
-                        Console.WriteLine(" Create New Users would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "AdminOption1":
-                        Console.WriteLine(" AdminOption1 would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "AdminOption2":
-                        Console.WriteLine(" AdminOption2 would start here");
-                        Console.WriteLine(" Press any key to continue");
-                        Console.ReadKey();
-                        break;
-                    case "Logout":
-=======
 
                     case 6:
->>>>>>> 0bd1afef6561a63eb33a8f8fe83ad0c5be11325d
+                        // Logout method begins here
                         menuIndex = 0;
                         runMenu = false;
                         break;
@@ -382,71 +289,151 @@
 
         public static void Transfer(int userID)
         {
-            decimal amount, amountTo;
-            int fromAccountID, toAccountID;
+            menuIndex = 0;
+
+            //Declatation
             List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+            List<string> menuItems = new List<string>();
+            bool runMenu = true;
+            bool runMenu2 = true;
+            string? senderAccountName, reciverAccountName, input;
+            int senderAccountId, reciverAccountId, senderAccountPos, reciverAccountPos;
+            decimal senderBalance, reciverBalance;
+            string menuMsg = " Please select an account to transfer from\n ";
+            string menuMsg2 = "\n Please select a reciver account";
 
-            Console.WriteLine("\nWhich account do you wish to transfer money from?");
-            fromAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
-            bool userChoiceAccountIsValid = fromAccountID != -1; //check input for account's type
-
-            if (userChoiceAccountIsValid)
+            //Create menu Items
+            for (int i = 0; i < checkaccounts.Count; i++)
             {
-                amount = GetTransferAmount();
-                decimal balanceAccount = checkaccounts[fromAccountID].balance;
-
-                //check balance to withdraw amount "from" account
-                if (amount > balanceAccount)
-                {
-                    Console.WriteLine("ERROR! Insuficient amount");
-                }
-                //if there is enough money, get data "to" deposit
-                else
-                {
-                    Console.WriteLine("\nWhich account do you wish to transfer money to?");
-                    toAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
-                    bool userChoiceTargetAccountIsValid = toAccountID != -1; //check input for account's type
-
-                    if (userChoiceTargetAccountIsValid)
-                    {
-                        //check currencies
-                        if (checkaccounts[fromAccountID].currency_id != checkaccounts[toAccountID].currency_id)
-                        {
-                            //transaction between different currencies
-                            amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
-                        }
-                        else
-                        {
-                            //transaction between same currency
-                            amountTo = amount;
-                        }
-
-                        //execute transaction
-                        SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo);
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("\nMoney transfered!".ToUpper());
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        //wrong target account choice
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Invalid Account Target".ToUpper());
-                        Console.ResetColor();
-                    }
-                }
+                menuItems.Add(checkaccounts[i].name);
             }
+            menuItems.Add("Exit");
 
-        }
+            //Menu Start
+            while (runMenu)
+            {
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
 
-        public static decimal GetTransferAmount()
-        {
-            Console.WriteLine("\nHow much do you want to transfer?");
-            Console.Write("===> ");
-            string? transfer = Console.ReadLine();
-            decimal amount;
-            decimal.TryParse(transfer, out amount);
-            return amount;
+                //Exit case
+                if (selectedMenuItems == menuItems.Count - 1)
+                {
+                    runMenu = false;
+                }
+                //select account case
+                else if (selectedMenuItems <= menuItems.Count - 1)
+                {
+                    Console.Clear();
+                    senderAccountId = checkaccounts[selectedMenuItems].id;
+                    senderAccountName = checkaccounts[selectedMenuItems].name;
+                    senderBalance = checkaccounts[selectedMenuItems].balance;
+                    senderAccountPos = selectedMenuItems;
+                    Console.WriteLine($"\n {checkaccounts[selectedMenuItems].name} account was selected");
+                    menuMsg2 = menuMsg2 + $"\n Sender account: {checkaccounts[selectedMenuItems].name}";
+                    Console.ReadKey();
+                    runMenu2 = true;
+                    menuIndex = 0;
+
+                    //Submenu Start
+                    while (runMenu2)
+                    {
+                        selectedMenuItems = DrawMenu(menuItems, menuMsg2);
+                        reciverAccountName = "";
+                        //Exit case
+                        if (selectedMenuItems == menuItems.Count - 1)
+                        {
+                            runMenu2 = false;
+                        }
+                        else if (selectedMenuItems <= menuItems.Count - 1)
+                        {
+
+                            Console.Clear();
+                            reciverAccountId = checkaccounts[selectedMenuItems].id;
+                            reciverAccountName = checkaccounts[selectedMenuItems].name;
+                            reciverAccountPos = selectedMenuItems;
+
+                            //Same account was selected
+                            if (senderAccountName == reciverAccountName)
+                            {
+                                Console.Clear();
+                                Console.WriteLine($"\n Can not select the same account");
+                                Console.WriteLine($" Press any key to continue");
+                                Console.ReadKey();
+                            }
+                            //Select reciver account
+                            else
+                            {
+                                reciverBalance = checkaccounts[selectedMenuItems].balance;
+
+                                Console.WriteLine($"\n {checkaccounts[selectedMenuItems].name} account was selected");
+                                Console.ReadKey();
+                                Console.Clear();
+                                Console.WriteLine($"\n Sender account: {senderAccountName}: {senderBalance}");
+                                Console.WriteLine($" Reciver account: {reciverAccountName}: {reciverBalance}");
+                                Console.Write($"\n Enter amount you wish to transfer: ");
+                                input = Console.ReadLine();
+
+
+                                decimal.TryParse(input, out decimal transferAmount);
+                                //Transfer amount is negative
+                                if (transferAmount <= 0)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine($"\n Amount can not be negative");
+                                    Console.WriteLine($" Press any key to continue");
+                                    Console.ReadKey();
+                                    runMenu = false;
+                                    runMenu2 = false;
+                                }
+                                //Transfer amount larger than balance
+                                else if (transferAmount > senderBalance)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine($"\n Transfer amount exceeds account balance");
+                                    Console.WriteLine($" Press any key to continue");
+                                    Console.ReadKey();
+                                    runMenu = false;
+                                    runMenu2 = false;
+                                }
+                                //Transfer Start
+                                else
+                                {
+
+                                    //check currencies
+                                    if (checkaccounts[senderAccountPos].currency_id != checkaccounts[reciverAccountPos].currency_id)
+                                    {
+                                        //transaction between different currencies
+                                        transferAmount = CurrencyExchange(transferAmount, senderAccountPos, reciverAccountPos, checkaccounts);
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount);
+                                        Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
+                                        Console.WriteLine($"\n Press any key to continue");
+                                        Console.ReadKey();
+
+                                        runMenu = false;
+                                        runMenu2 = false;
+                                    }
+                                    //transaction between same currency
+                                    else
+                                    {
+                                        //execute transaction
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount);
+
+                                        Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
+                                        Console.WriteLine($"\n Press any key to continue");
+                                        Console.ReadKey();
+                                        runMenu = false;
+                                        runMenu2 = false;
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+            menuIndex = 0;
         }
 
         public static int DisplayAndSelectAccount(List<BankAccountModel> checkaccounts)
@@ -474,116 +461,195 @@
 
         public static void Withdraw(int userID)
         {
+            string? input;
+            decimal balance;
+            int accountId;
+            menuIndex = 0;
+            bool runMenu = true;
             decimal amount;
+            string menuMsg = $"\n Please select an option ";
             List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
-
-            Console.Clear();
-            Console.WriteLine("\n Which account do you wish to withdraw money from?\n");
+            List<string> menuItems = new List<string>();
 
             for (int i = 0; i < checkAccounts.Count; i++)
             {
-                Console.WriteLine($" {i + 1}: {checkAccounts[i].name} | Balance: {checkAccounts[i].balance}");
+                menuItems.Add(checkAccounts[i].name);
             }
+            menuItems.Add("Exit");
 
-            Console.Write("\n ===> ");
-            string? accountChoice = Console.ReadLine();
 
-            int.TryParse(accountChoice, out int accountID);
-            accountID -= 1;
-
-            Console.WriteLine("\n Amount to withdraw from your account?\n");
-            Console.Write(" ===> ");
-            string? transfer = Console.ReadLine();
-            decimal.TryParse(transfer, out amount);
-
-            if (amount <= 0)
+            while (runMenu)
             {
-                Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
+
+                //Exit case
+                if (selectedMenuItems == menuItems.Count - 1)
+                {
+                    runMenu = false;
+                }
+                else if (selectedMenuItems <= menuItems.Count - 1)
+                {
+                    balance = checkAccounts[selectedMenuItems].balance;
+                    accountId = checkAccounts[selectedMenuItems].id;
+                    Console.Clear();
+                    Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
+
+                    Console.Write($" Enter amount you wish to withdraw: ");
+                    input = Console.ReadLine();
+                    decimal.TryParse(input, out amount);
+                    if (amount < 0)
+                    {
+                        Console.WriteLine(" Amount to witdraw cannot be a negative value."); //message for negative amount
+                    }
+                    else if (checkAccounts[selectedMenuItems].balance < amount)
+                    {
+                        Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
+                    }
+                    else
+                    {
+                        amount = checkAccounts[selectedMenuItems].balance -= amount;
+                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {amount}");
+                        SQLconnection.UpdateAccountBalance(amount, checkAccounts[selectedMenuItems].id, userID);
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
+                    }
+
+                }
+                else { }
+
             }
-            else if (checkAccounts[accountID].balance < amount)
-            {
-                Console.WriteLine("\n ERROR! Not allowed. You don't have enough money");
-            }
-            else
-            {
-                amount = checkAccounts[accountID].balance -= amount;
-                Console.WriteLine($"\n Account: {checkAccounts[accountID].name} New balance: {amount}");
-                SQLconnection.UpdateAccountBalance(amount, checkAccounts[accountID].id, userID);
-            }
+            menuIndex = 0;
         }
 
         public static void OpenAccount(int userID)
         {
-            Console.WriteLine("\n What type of account do you want to open?");
-            Console.WriteLine("\n Checking");
-            Console.WriteLine(" Salary");
-            Console.WriteLine(" Savings");
-            Console.Write("===> ");
-            string? accountType = Console.ReadLine();
-
+            menuIndex = 0;
+            bool runMenu = true;
+            bool runMenu2 = true;
+            bool hasAccountType = false;
+            string newAccountName = "";
+            string menuMsg = $" Please select an option ";
             List<BankAccountModel> checkAccounts = SQLconnection.LoadBankAccounts(userID);
+            List<string> menuItems = new List<string>() { "Open Account", "Exit" };
 
-            if (!string.IsNullOrEmpty(accountType)) //Checks to see if the account type isn't null or empty before proceeding
+            while (runMenu)
             {
-                bool hasAccountType = false;
+                int selectedMenuItems = DrawMenu(menuItems, menuMsg);
 
-                if (accountType == "Checking")
+                if (selectedMenuItems == 0)
                 {
-                    foreach (BankAccountModel bankAccountModel in checkAccounts)
+                    menuIndex = 0;
+                    List<string> menuItems2 = new List<string>() { "Checking", "Salary", "Savings", "Exit" };
+                    Console.WriteLine($"{menuItems[selectedMenuItems]}");
+
+                    runMenu2 = true;
+                    newAccountName = "";
+                    hasAccountType = false;
+
+                    while (runMenu2)
                     {
-                        if (bankAccountModel.name == "Checking")
+                        int selectedMenuItems2 = DrawMenu(menuItems2, menuMsg);
+
+                        if (selectedMenuItems2 == 0)
                         {
-                            hasAccountType = true;
-                            break;
+                            foreach (BankAccountModel bankAccountModel in checkAccounts)
+                            {
+                                if (bankAccountModel.name == "Checking")
+                                {
+                                    // Check if checking account exist
+                                    hasAccountType = true;
+                                    menuIndex = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    newAccountName = "Checking";
+                                }
+                            }
+                        }
+                        else if (selectedMenuItems2 == 1)
+                        {
+                            foreach (BankAccountModel bankAccountModel in checkAccounts)
+                            {
+                                if (bankAccountModel.name == "Salary")
+                                {
+                                    // Check if salary account exist
+                                    hasAccountType = true;
+                                    menuIndex = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    newAccountName = "Salary";
+                                }
+                            }
+                        }
+                        else if (selectedMenuItems2 == 2)
+                        {
+                            foreach (BankAccountModel bankAccountModel in checkAccounts)
+                            {
+                                if (bankAccountModel.name == "Savings")
+                                {
+                                    // Check if savings account exist
+                                    hasAccountType = true;
+                                    menuIndex = 0;
+                                    break;
+                                }
+                                else
+                                {
+                                    newAccountName = "Savings";
+                                }
+                            }
+                        }
+                        else if (selectedMenuItems2 == 3)
+                        {
+                            // This exits the menu
+                            menuIndex = 0;
+                            runMenu2 = false;
+                        }
+                        else { }
+
+                        if (hasAccountType)
+                        {
+                            Console.WriteLine("\n ERROR: You have already opened an account of this type"); //The account already exists in the database
+                            Console.WriteLine("\n Press Enter to continue.");
+                            Console.ReadKey();
+                            runMenu2 = false;
+                        }
+                        else
+                        {
+                            if (newAccountName == "" || newAccountName == null)
+                            {
+
+                            }
+                            else
+                            {
+                                BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
+                                {
+                                    name = newAccountName,
+                                    interest_rate = 0.75M,
+                                    user_id = userID,
+                                    currency_id = 1,
+                                    balance = 0
+
+                                };
+                                SQLconnection.OpenAccount(bankAccountModel);
+                                Console.WriteLine("\n Account successfully opened");
+                                Console.WriteLine("\n Press Enter to continue.");
+                                Console.ReadKey();
+                                runMenu2 = false;
+                            }
                         }
                     }
                 }
-                else if (accountType == "Salary")
+                else if (selectedMenuItems == 1)
                 {
-                    foreach (BankAccountModel bankAccountModel in checkAccounts)
-                    {
-                        if (bankAccountModel.name == "Salary")
-                        {
-                            hasAccountType = true;
-                            break;
-                        }
-                    }
+                    // This exits this menu
+                    runMenu = false;
                 }
-                else if (accountType == "Savings")
-                {
-                    foreach (BankAccountModel bankAccountModel in checkAccounts)
-                    {
-                        if (bankAccountModel.name == "Savings")
-                        {
-                            hasAccountType = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (hasAccountType)
-                {
-                    Console.WriteLine("\nERROR: You have already opened an account of this type"); //The account already exists in the database
-                }
-                else
-                {
-                    BankAccountModel bankAccountModel = new BankAccountModel //Details of the new account
-                    {
-                        name = accountType,
-                        interest_rate = 0.75M,
-                        user_id = userID,
-                        currency_id = 1,
-                        balance = 0
-
-                    };
-                    SQLconnection.OpenAccount(bankAccountModel);
-                    Console.WriteLine("\nAccount successfully opened");
-                }
+                else { }
             }
-            else
-            {
-                Console.WriteLine("\nERROR: This account type is null or empty"); //The account type is either null or empty
-            }
+            menuIndex = 0;
         }
 
         public static void ReturnOnInterest(int userID, decimal input)
@@ -641,34 +707,64 @@
         {
             string? firstName, lastName, pinCode;
 
-            Console.WriteLine("");
-            Console.Write($" Please enter your first name: ");
-            firstName = Console.ReadLine();
+            int loginAttempts = 3; //The number of attempts that the user starts out with
 
-            Console.Write($" Please enter your last name: ");
-            lastName = Console.ReadLine();
-
-            Console.Write($" Please enter your Pin code: ");
-            pinCode = Console.ReadLine();
-
-            if (firstName == null || lastName == null || pinCode == null)
+            for (int i = 0; i < loginAttempts; i--) //For each time that the user fails to login an attempt will be used up
             {
-                Console.WriteLine("User does not exist.\nPlease try again.");
-            }
-            else
-            {
-                List<UserModel> checkUsers = SQLconnection.CheckLogin(firstName, lastName, pinCode);
+                Console.WriteLine("\n Please enter your details");
+                Console.Write($"\n First name: ");
+                firstName = Console.ReadLine();
 
-                if (checkUsers.Count < 1)
+                Console.Write($" Last name: ");
+                lastName = Console.ReadLine();
+
+                Console.Write($" PIN code: ");
+                pinCode = Console.ReadLine();
+
+                if (firstName == null || lastName == null || pinCode == null)
                 {
-                    Console.WriteLine("Failed loggin attempt.");
-                    Console.WriteLine(checkUsers.Count);
-                    Console.ReadLine();
+                    Console.WriteLine("\n ERROR: User does not exist");
+                    loginAttempts--;
                 }
                 else
                 {
-                    checkUsers[0].Info();
-                    BankMenu(checkUsers);
+                    List<UserModel> checkUsers = SQLconnection.CheckLogin(firstName, lastName, pinCode);
+
+                    if (checkUsers.Count < 1)
+                    {
+                        Console.WriteLine("\n ERROR: Login failed");
+                        //Console.WriteLine(checkUsers.Count);
+                        //Console.ReadLine();
+                        loginAttempts--;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n Login successful");
+                        checkUsers[0].Info();
+                        BankMenu(checkUsers);
+                        break;
+                    }
+                }
+
+                if (loginAttempts == 2)
+                {
+                    Console.WriteLine(" You have two attempts left.");
+                    Console.WriteLine(" Press any key to continue");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else if (loginAttempts == 1)
+                {
+                    Console.WriteLine(" You have one attempt left.");
+                    Console.WriteLine(" Press any key to continue");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else
+                {
+                    Console.WriteLine(" You have used up all of your login attempts. The application will now shut down");
+                    Environment.Exit(0);
+                    break;
                 }
             }
         }
