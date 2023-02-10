@@ -60,15 +60,74 @@ namespace group_project_bank_csharp
             }
         }
 
-        public static void UpdateAccountBalance(decimal amount, int id, int user_id)
+        public static bool UpdateAccountBalanceWithdraw(decimal amount, int id, int user_id, int currency_id)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
-                cnn.Execute($"UPDATE bank_account SET balance = '{amount.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}' WHERE id = '{id}' AND user_id = '{user_id}'", new DynamicParameters());
+                cnn.Open();
+                try
+                {
+                    var numberFormat = new NumberFormatInfo
+                    {
+                        NumberDecimalSeparator = ".",
+                        NumberGroupSeparator = ""
+                    };
+
+                    using (var transaction = cnn.BeginTransaction())
+                    {
+                        cnn.Execute($@"
+                        UPDATE bank_account 
+                        SET balance = balance + '{amount.ToString(numberFormat)}'
+                        WHERE id = '{id}' AND user_id = '{user_id}';
+                        INSERT INTO bank_transaction (name, user_id, from_account_id, amount_sender, currency_id_sender)
+                        VALUES ('Withdraw', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
+                        transaction.Commit();
+                        return true;
+                    }
+                }
+                catch (Npgsql.PostgresException)
+                {
+                    //Console.WriteLine(e.Message);
+                    return false;
+                }
             }
         }
 
-        public static bool TransferMoney(int user_id, int from_account_id, int to_account_id, decimal amountFrom, decimal amountTo)
+        public static bool UpdateAccountBalanceDeposit(decimal amount, int id, int user_id, int currency_id)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                cnn.Open();
+                try
+                {
+                    var numberFormat = new NumberFormatInfo
+                    {
+                        NumberDecimalSeparator = ".",
+                        NumberGroupSeparator = ""
+                    };
+
+                    using (var transaction = cnn.BeginTransaction())
+                    {
+                        cnn.Execute($@"
+                        UPDATE bank_account 
+                        SET balance = balance - '{amount.ToString(numberFormat)}'
+                        WHERE id = '{id}' AND user_id = '{user_id}';
+                        INSERT INTO bank_transaction (name, user_id, from_account_id, amount_sender, currency_id_sender)
+                        VALUES ('Deposit', '{user_id}', '{id}', '{amount.ToString(numberFormat)}', '{currency_id}');", new DynamicParameters());
+                        transaction.Commit();
+                        return true;
+                    }
+                }
+                catch (Npgsql.PostgresException)
+                {
+                    //Console.WriteLine(e.Message);
+                    return false;
+                }
+            }
+        }
+
+
+        public static bool TransferMoney(int user_id, int from_account_id, int to_account_id, decimal amountFrom, decimal amountTo, int currencySenderId, int currencyReceiverId)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
@@ -78,22 +137,40 @@ namespace group_project_bank_csharp
                 {
                     try
                     {
+
+                        var numberFormat = new NumberFormatInfo
+                        {
+                            NumberDecimalSeparator = ".",
+                            NumberGroupSeparator = ""
+                        };
+
                         cnn.Execute($@"
-                UPDATE bank_account 
-                SET balance = balance - '{amountFrom.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}'
-                    WHERE id = '{from_account_id}' AND user_id = '{user_id}';
-                UPDATE bank_account 
-                SET balance = balance + '{amountTo.ToString(CultureInfo.CreateSpecificCulture("en-GB"))}'
-                WHERE id = '{to_account_id}' AND user_id = '{user_id}'", new DynamicParameters());
+                        UPDATE bank_account 
+                        SET balance = balance - '{amountFrom.ToString(numberFormat)}'
+                            WHERE id = '{from_account_id}' AND user_id = '{user_id}' AND currency_id = '{currencySenderId}';
+                        UPDATE bank_account 
+                        SET balance = balance + '{amountTo.ToString(numberFormat)}'
+                        WHERE id = '{to_account_id}' AND user_id = '{user_id}' AND currency_id = '{currencyReceiverId}';
+                        INSERT INTO bank_transaction (name, user_id, from_account_id, to_account_id, amount_sender, amount_receiver, currency_id_sender, currency_id_receiver)
+                        VALUES ('Transfer', '{user_id}', '{from_account_id}', '{to_account_id}', '{amountFrom.ToString(numberFormat)}', '{amountTo.ToString(numberFormat)}', '{currencySenderId}', '{currencyReceiverId}');", new DynamicParameters());
                         transaction.Commit();
                         return true;
                     }
-                    catch (Npgsql.PostgresException e)
+                    catch (Npgsql.PostgresException)
                     {
-                        Console.WriteLine(e.MessageText);
+                        //Console.WriteLine(e.Message);
                         return false;
                     }
                 }
+            }
+        }
+
+        public static List<TransactionsModel> LoadTransactions(int user_id)
+        {
+            using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<TransactionsModel>($"SELECT * FROM bank_transaction WHERE user_id = '{user_id}'", new DynamicParameters());
+                return output.ToList();
             }
         }
 

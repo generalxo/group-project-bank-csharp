@@ -1,4 +1,8 @@
-﻿namespace group_project_bank_csharp
+﻿using System.Net.NetworkInformation;
+using System.Text;
+using System.Xml.Linq;
+
+namespace group_project_bank_csharp
 {
     internal class Program
     {
@@ -69,7 +73,6 @@
             }
 
         }
-
         static void BankMenu(List<UserModel> currentUser)
         {
             bool runMenu = true;
@@ -110,7 +113,7 @@
                             //Loop for each currency
                             for (int j = 0; j < currencies.Count; j++)
                             {
-                                //check if account currency id == currencies_id --> display currency_name
+                                //check if account currency id == currencies_id --> toDisplay currency_name
                                 if (bankAccounts[i].currency_id == currencies[j].id)
                                 {
                                     Console.WriteLine($" {bankAccounts[i].name} {bankAccounts[i].balance}: {currencies[j].name}");
@@ -126,6 +129,8 @@
                     case 1:
                         // Transfer method begins here
                         Transfer(currentUser[0].id);
+                        Console.WriteLine(" Press any key to continue");
+                        Console.ReadKey();
                         break;
 
                     case 2:
@@ -161,6 +166,12 @@
                         Console.ReadKey();
                         break;
 
+                    //                    case 6:
+
+                    //                        Console.WriteLine(DisplayTransactions(currentUser[0].id));
+                    //                        Console.WriteLine(" Press any key to continue");
+                    //                        Console.ReadKey();
+                    //                        break;
                     case 6:
                         // Logout method begins here
                         menuIndex = 0;
@@ -289,6 +300,70 @@
 
         public static void Transfer(int userID)
         {
+            //<<<<<<< HEAD
+            //            decimal amount, amountTo, balanceAccount;
+            //            int fromAccountID, toAccountID;
+            //            List<BankAccountModel> checkaccounts = SQLconnection.LoadBankAccounts(userID);
+            //            int currencyIdSender, currencyIdReceiver;
+
+            //            Console.WriteLine("\nWhich account do you wish to transfer money FROM?");
+            //            fromAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer from
+            //            bool userChoiceAccountIsValid = fromAccountID != -1; //check input for account's type
+
+            //            Console.WriteLine("\nWhich account do you wish to transfer money TO?");
+            //            toAccountID = DisplayAndSelectAccount(checkaccounts); //menu option with available accounts to transfer to
+            //            bool userChoiceTargetAccountIsValid = toAccountID != -1; //check input for account's type
+
+            //            balanceAccount = checkaccounts[fromAccountID].balance;
+            //            currencyIdSender = checkaccounts[fromAccountID].currency_id; //currency id from_account
+            //            currencyIdReceiver = checkaccounts[toAccountID].currency_id; //currency id to_account
+
+            //            if (userChoiceAccountIsValid && userChoiceTargetAccountIsValid)
+            //            {
+            //                Console.Clear();
+            //                amount = GetTransferAmount();
+
+            //                //check balance to withdraw amount "from" account
+            //                if (amount > balanceAccount)
+            //                {
+            //                    Console.WriteLine("ERROR! Insuficient amount");
+            //                }
+            //                //if there is enough money, get data "to" deposit
+            //                else
+            //                {
+            //                    //check currencies
+            //                    if (currencyIdSender != currencyIdReceiver)
+            //                    {
+            //                        //transaction between different currencies
+            //                        amountTo = CurrencyExchange(amount, fromAccountID, toAccountID, checkaccounts);
+            //                    }
+            //                    else
+            //                    {
+            //                        //transaction between same currency
+            //                        amountTo = amount;
+            //                    }
+
+            //                    try
+            //                    {
+            //                        //execute transaction
+            //                        SQLconnection.TransferMoney(userID, checkaccounts[fromAccountID].id, checkaccounts[toAccountID].id, amount, amountTo, currencyIdSender, currencyIdReceiver);
+            //                        Console.ForegroundColor = ConsoleColor.Cyan;
+            //                        Console.WriteLine("\nMoney transfered!".ToUpper());
+            //                        Console.ResetColor();
+            //                    }
+            //                    catch (Npgsql.PostgresException e)
+            //                    {
+            //                        Console.WriteLine("Something strange happened. Unauthorized transaction." +
+            //                            "\nPlease try again later");
+            //                        Console.WriteLine(e.ErrorCode);
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                InvalidInput("");
+            //            }
+            //=======
             menuIndex = 0;
 
             //Declatation
@@ -297,7 +372,7 @@
             bool runMenu = true;
             bool runMenu2 = true;
             string? senderAccountName, reciverAccountName, input;
-            int senderAccountId, reciverAccountId, senderAccountPos, reciverAccountPos;
+            int senderAccountId, reciverAccountId, senderAccountPos, reciverAccountPos, senderCurrencyId, receiverCurrencyId;
             decimal senderBalance, reciverBalance;
             string menuMsg = " Please select an account to transfer from\n ";
             string menuMsg2 = "\n Please select a reciver account";
@@ -326,6 +401,7 @@
                     senderAccountId = checkaccounts[selectedMenuItems].id;
                     senderAccountName = checkaccounts[selectedMenuItems].name;
                     senderBalance = checkaccounts[selectedMenuItems].balance;
+                    senderCurrencyId = checkaccounts[selectedMenuItems].currency_id; //currency id from_account
                     senderAccountPos = selectedMenuItems;
                     Console.WriteLine($"\n {checkaccounts[selectedMenuItems].name} account was selected");
                     menuMsg2 = menuMsg2 + $"\n Sender account: {checkaccounts[selectedMenuItems].name}";
@@ -363,6 +439,7 @@
                             else
                             {
                                 reciverBalance = checkaccounts[selectedMenuItems].balance;
+                                receiverCurrencyId = checkaccounts[selectedMenuItems].currency_id; //currency id to_account
 
                                 Console.WriteLine($"\n {checkaccounts[selectedMenuItems].name} account was selected");
                                 Console.ReadKey();
@@ -403,7 +480,7 @@
                                     {
                                         //transaction between different currencies
                                         transferAmount = CurrencyExchange(transferAmount, senderAccountPos, reciverAccountPos, checkaccounts);
-                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount);
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount, senderCurrencyId, receiverCurrencyId);
                                         Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
                                         Console.WriteLine($"\n Press any key to continue");
                                         Console.ReadKey();
@@ -415,14 +492,14 @@
                                     else
                                     {
                                         //execute transaction
-                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount);
-
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount, senderCurrencyId, receiverCurrencyId);
                                         Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
                                         Console.WriteLine($"\n Press any key to continue");
                                         Console.ReadKey();
                                         runMenu = false;
                                         runMenu2 = false;
                                     }
+
                                 }
 
                             }
@@ -494,7 +571,13 @@
                     Console.Clear();
                     Console.WriteLine($"\n\n {checkAccounts[selectedMenuItems].name} was selected\n Balance: {balance} \n");
 
+                    //Console.WriteLine($" account id: {accountId}");
+
+                    Console.WriteLine($" Enter amount you wish to withdraw: ");
+
+
                     Console.Write($" Enter amount you wish to withdraw: ");
+
                     input = Console.ReadLine();
                     decimal.TryParse(input, out amount);
                     if (amount < 0)
@@ -507,9 +590,15 @@
                     }
                     else
                     {
-                        amount = checkAccounts[selectedMenuItems].balance -= amount;
-                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {amount}");
-                        SQLconnection.UpdateAccountBalance(amount, checkAccounts[selectedMenuItems].id, userID);
+                        decimal newBalance = checkAccounts[selectedMenuItems].balance -= amount;
+                        int currencyId = checkAccounts[selectedMenuItems].currency_id;
+                        Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {newBalance}");
+                        SQLconnection.UpdateAccountBalanceWithdraw(amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
+
+                        //amount = checkAccounts[selectedMenuItems].balance -= amount;
+                        //Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {amount}");
+                        //SQLconnection.UpdateAccountBalance(amount, checkAccounts[selectedMenuItems].id, userID);
+
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
                     }
@@ -701,6 +790,32 @@
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"INVALID INPUT {input}! Try again.");
             Console.ResetColor();
+        }
+
+        public static string DisplayTransactions(int userId)
+        {
+            Console.Clear();
+            List<TransactionsModel> transactions = SQLconnection.LoadTransactions(userId);
+            List<CurrencyConverter> currencyDB = SQLconnection.LoadBankCurrency();
+
+            //map currencies Ids where the key is the currencyId and the value is the currency name
+            Dictionary<int, string> currencyMap = currencyDB.ToDictionary(x => x.id, x => x.name);
+
+            string toDisplay = "";
+
+            for (int i = 0; i < transactions.Count; i++)
+            {
+                int currencyId = transactions[i].currency_id_sender;
+                string currencyName = currencyMap.ContainsKey(currencyId) ? currencyMap[currencyId] : "Unknown Currency";
+                toDisplay += $"\n {i + 1}: {transactions[i].name}, {transactions[i].amount_sender} {currencyName}, {transactions[i].timestamp}\n";
+            }
+
+            if (toDisplay == "")
+            {
+                toDisplay = "No transactions to display";
+            }
+
+            return toDisplay;
         }
 
         public static void Login()
