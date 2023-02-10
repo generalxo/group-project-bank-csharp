@@ -499,8 +499,11 @@
                         decimal newBalance = checkAccounts[selectedMenuItems].balance += amount;
                         int currencyId = checkAccounts[selectedMenuItems].currency_id;
                         Console.WriteLine($"\n Account: {checkAccounts[selectedMenuItems].name} New balance: {newBalance}");
-                        Console.Write("\n --------------------------------------------\n");
-                        ReturnOnInterest(userID, amount);
+                        if (menuItems[selectedMenuItems] == "Savings")
+                        {
+                            Console.Write("\n --------------------------------------------\n");
+                            ReturnOnInterest(userID, amount);
+                        }
                         SQLconnection.UpdateAccountBalanceDeposit(amount, checkAccounts[selectedMenuItems].id, userID, currencyId);
                         Console.WriteLine(" Press any key to continue");
                         Console.ReadKey();
