@@ -127,7 +127,7 @@ namespace group_project_bank_csharp
         }
 
 
-        public static bool TransferMoney(int user_id, int from_account_id, int to_account_id, decimal amountFrom, decimal amountTo, int currencySenderId, int currencyReceiverId)
+        public static bool TransferMoney(int user_id, int from_account_id, int to_account_id, decimal transferAmount, int currencySenderId, int currencyReceiverId)
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
@@ -146,13 +146,13 @@ namespace group_project_bank_csharp
 
                         cnn.Execute($@"
                         UPDATE bank_account 
-                        SET balance = balance - '{amountFrom.ToString(numberFormat)}'
+                        SET balance = balance - '{transferAmount.ToString(numberFormat)}'
                             WHERE id = '{from_account_id}' AND user_id = '{user_id}' AND currency_id = '{currencySenderId}';
                         UPDATE bank_account 
-                        SET balance = balance + '{amountTo.ToString(numberFormat)}'
+                        SET balance = balance + '{transferAmount.ToString(numberFormat)}'
                         WHERE id = '{to_account_id}' AND user_id = '{user_id}' AND currency_id = '{currencyReceiverId}';
                         INSERT INTO bank_transaction (name, user_id, from_account_id, to_account_id, amount_sender, amount_receiver, currency_id_sender, currency_id_receiver)
-                        VALUES ('Transfer', '{user_id}', '{from_account_id}', '{to_account_id}', '{amountFrom.ToString(numberFormat)}', '{amountTo.ToString(numberFormat)}', '{currencySenderId}', '{currencyReceiverId}');", new DynamicParameters());
+                        VALUES ('Transfer', '{user_id}', '{from_account_id}', '{to_account_id}', '{transferAmount.ToString(numberFormat)}', '{transferAmount.ToString(numberFormat)}', '{currencySenderId}', '{currencyReceiverId}');", new DynamicParameters());
                         transaction.Commit();
                         return true;
                     }
