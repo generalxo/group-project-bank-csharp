@@ -413,7 +413,7 @@
                                     {
                                         //transaction between different currencies
                                         transferAmount = CurrencyExchange(transferAmount, senderAccountPos, reciverAccountPos, checkaccounts);
-                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount, senderCurrencyId, receiverCurrencyId);
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, transferAmount, senderCurrencyId, receiverCurrencyId);
                                         Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
                                         Console.WriteLine($"\n Press any key to continue");
                                         Console.ReadKey();
@@ -425,7 +425,7 @@
                                     else
                                     {
                                         //execute transaction
-                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, reciverBalance, transferAmount, senderCurrencyId, receiverCurrencyId);
+                                        SQLconnection.TransferMoney(userID, senderAccountId, reciverAccountId, transferAmount, senderCurrencyId, receiverCurrencyId);
                                         Console.WriteLine($"\n {Math.Truncate(transferAmount * 100) / 100} was transfered to {reciverAccountName}");
                                         Console.WriteLine($"\n Press any key to continue");
                                         Console.ReadKey();
@@ -731,7 +731,7 @@
                 if (Account.name == "Savings" && Account.interest_rate > 0)
                 {
                     Console.WriteLine("\n The information below shows the return of the interest rate for your deposit to your savings account.");
-                    Console.WriteLine("\n Return from deposit:");
+                    Console.WriteLine("\n New value of deposit:");
                     Console.WriteLine($" 1 month:  {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 1) * 100) / 100} {AccountCurrency[userID - 1].name}");
                     Console.WriteLine($" 3 months: {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 3) * 100) / 100} {AccountCurrency[userID - 1].name}");
                     Console.WriteLine($" 6 months: {Math.Truncate(input * (decimal)Math.Pow((1 + (double)interestRate / 12), 6) * 100) / 100} {AccountCurrency[userID - 1].name}");
