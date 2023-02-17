@@ -22,7 +22,8 @@ The project was managed within the Scrum framework which involved iterative deve
 # 🔨 Tools
 * IDE: Visual Studio
 * Languages: C#, SQL
-* Frameworks: .Net, Dapper, Npgsql
+* Frameworks: .Net
+* Packages: Dapper, Npgsql
 * RDBMS: PostgreSQL
 * DBMS: DbGate
 
