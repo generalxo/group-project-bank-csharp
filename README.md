@@ -20,6 +20,11 @@ Bank application developed using C# programming language with .NET 6.0. The appl
 The project was managed within the Scrum framework which involved iterative development cycles, daily stand-up meetings, and regular sprint plannings and retrospectives to improve the product continuously. Throughout the development process, the team conducted regular testing and quality assurance to ensure the application was reliable and free of bugs.
 
 # 🔨 Tools
+* IDE: Visual Studio
+* Languages: C#, SQL
+* Frameworks: .Net, Dapper, Npgsql
+* RDBMS: PostgreSQL
+* DBMS: DbGate
 
 # 💻 Structure
 
